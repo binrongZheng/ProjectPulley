@@ -11,7 +11,7 @@ public class Manager : MonoBehaviour {
 	public SystemType systemType;
 	public PulleyType pulleyType;
 	public SheaveDiametre sheaveDiametre;
-	public float loadMass;
+	public float boxMass;
 	public float staticCoef;
 	public float alpha;
 	public float ropeDiametre;
@@ -29,13 +29,14 @@ public class Manager : MonoBehaviour {
 	float P_Rope_Metre=27;			//27N/m
 	float overHaulingFactor;
 	float[] longituds;
-	float[] tension;
-	float numTension;
+	float[] tension=new float[3];
+	int numTension;
 	float outputForce;
 	float MA;
 	float[] pulleyForce; 
 	int numPulley;
 	float gravity=9.81f;
+	float diferentDistanece;
 
 	// Use this for initialization
 	void Start () {
@@ -44,19 +45,20 @@ public class Manager : MonoBehaviour {
 			MA = 1;
 			numPulley = 0;
 			numTension = 2;
-			longituds [0] = longituds [1]=1;
+			longituds = new float[]{ 1, 1 };
 			break;
 		case SystemType.movablePulley:
 			MA = 2;
 			numPulley = 1;
 			numTension = 2;
-			longituds [0] = longituds [1]=1;
+			longituds = new float[]{ 1, 1 };
 			break;
 		case SystemType.twoPulleySystem:
 			MA = 2;
 			numPulley = 1;
 			numTension = 3;
-			longituds [0] = 1; longituds [1]=longituds[2]=longituds[0]/2;
+			longituds = new float[]{ 1, 0.5f,0.5f };
+
 			break;
 		default:
 			break;
@@ -66,7 +68,7 @@ public class Manager : MonoBehaviour {
 
 		setPulleyValue();
 
-		p_load = loadMass * gravity; 
+		p_load = boxMass * gravity; 
 
 		for(int i=0;i<numPulley;i++){
 			p_load += pulleyMass*gravity;
@@ -76,15 +78,28 @@ public class Manager : MonoBehaviour {
 		else if (MA == 2) overHaulingFactor = 2.1f;
 
 		//calculate 
+
 		tension[0]=p_load/MA;
 
 		for(int i=1;i<numTension;i++){
 			if (i == numTension - 1) {
 				tension [i] = tension [i - 1] * Mathf.Pow (eulerNum,staticCoef*beta*Mathf.Deg2Rad);
+				longituds [i] += inputDiatance;
+
 			} else {
 				tension [i] = tension [i - 1] * Mathf.Pow (eulerNum,staticCoef*180*Mathf.Deg2Rad);
+				longituds [i] -= inputDiatance / MA;
+
 			}
 		}
+		print (tension[0]);
+		print (tension[1]);
+		print (longituds[0]);
+		print (longituds[1]);
+
+		outputForce = tension [numTension - 1] - longituds [numTension - 1] * P_Rope_Metre;
+
+		print (outputForce);
 	}
 	
 	// Update is called once per frame
