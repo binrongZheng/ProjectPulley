@@ -34,7 +34,6 @@ namespace ourEngine {
 			res.z = v1.z - v2.z;
 			return res;
 		}
-
 		public static float Dot (ourVector3 v1, ourVector3 v2){
 			float res = v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
 			return res;
@@ -58,4 +57,67 @@ namespace ourEngine {
 		} 
 
 	}
+
+	public class ourQuaternion {
+		//variables
+		public float x;
+		public float y;
+		public float z;
+		public float w;
+
+		public ourQuaternion () {
+			x = 0;
+			y=0;
+			z=0;
+			w=1;
+		}
+		public ourQuaternion (float _x, float _y, float _z, float _w) {
+			x = _x;
+			y = _y;
+			z = _z;
+			w = _w;
+		}
+		public ourQuaternion (float angle, ourVector3 axis) {
+			x = axis.x * UnityEngine.Mathf.Sin(angle/2);
+			y = axis.y * UnityEngine.Mathf.Sin(angle/2);
+			z = axis.z * UnityEngine.Mathf.Sin(angle/2);
+			w = UnityEngine.Mathf.Cos(angle/2);
+		}
+		public static ourQuaternion operator *(ourQuaternion q1, ourQuaternion q2) {
+			q1.Normalize ();
+			q2.Normalize ();
+
+			ourQuaternion newQ = new ourQuaternion ();
+			newQ.w = (q2.w*q1.w - q2.x*q2.x - q2.y*q2.y - q2.z*q2.z);
+			newQ.x = (q2.w*q1.x + q2.x*q1.w - q2.y*q1.z + q2.z*q1.y);
+			newQ.y = (q2.w*q1.y + q2.x*q1.z + q2.y*q1.w - q2.z*q1.x);
+			newQ.z = (q2.w*q1.z - q2.x*q1.y + q2.y*q1.x + q2.z*q1.w);
+			return newQ;
+		}
+		public bool isUnitary () {
+			if (UnityEngine.Mathf.Sqrt (UnityEngine.Mathf.Pow(w,2) + UnityEngine.Mathf.Pow(x,2) + UnityEngine.Mathf.Pow(y,2) + UnityEngine.Mathf.Pow(z,2)) == 1) {
+				return true;
+			}
+			return false;
+		}
+
+		public void invertQuaternion () {
+			Normalize ();
+			x *= -1;
+			y *= -1;
+			z *= -1;
+		}
+
+		public void Normalize () {
+			if (!isUnitary()) {
+				float normal = w + x + y + z;
+				w /= normal;
+				x /= normal;
+				y /= normal;
+				z /= normal;
+			}
+			UnityEngine.Assertions.Assert.IsTrue (isUnitary(), "Quaterion is not unitary");
+		}
+	}
+
 }
