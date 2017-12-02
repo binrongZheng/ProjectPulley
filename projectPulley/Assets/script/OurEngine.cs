@@ -17,9 +17,22 @@ namespace ourEngine {
 		}
 
 		public float GetMagnitude () {
-			return UnityEngine.Mathf.Sqrt (UnityEngine.Mathf.Pow (x, 2) + UnityEngine.Mathf.Pow (y, 2) + UnityEngine.Mathf.Pow (z, 2));
+			return UnityEngine.Mathf.Sqrt (x*x + y*y + z*z);
 		}
-
+		public static ourVector3 operator * (ourVector3 v1, float scalar){
+			ourVector3 res = new ourVector3();
+			res.x = v1.x * scalar;
+			res.y = v1.y *scalar;
+			res.z = v1.z *scalar;
+			return res;
+		}
+		public static ourVector3 operator * (float scalar, ourVector3 v1){
+			ourVector3 res = new ourVector3();
+			res.x = v1.x * scalar;
+			res.y = v1.y *scalar;
+			res.z = v1.z *scalar;
+			return res;
+		}
 		public static ourVector3 operator + (ourVector3 v1, ourVector3 v2){
 			ourVector3 res = new ourVector3();
 			res.x = v1.x + v2.x;
@@ -52,9 +65,27 @@ namespace ourEngine {
 
 		public ourVector3 Normalize () {
 			float magnitude = GetMagnitude ();
-			ourVector3 res = new ourVector3 (x / magnitude, y / magnitude, z / magnitude);
+			ourVector3 res = new ourVector3 ();
+
+			if (magnitude < 0.01) //si es magnitud molt petita posar arrodonim a 0, ho fan aixi en el Vector3
+				res.x = res.y = res.z = 0;
+			else {
+				res.x = x / magnitude;
+				res.y = y / magnitude;
+				res.z = z / magnitude;
+			}
 			return res;
-		} 
+		}
+		public static implicit operator ourVector3 (UnityEngine.Vector3 v)
+		{
+			ourVector3 temp = new ourVector3 (v.x, v.y, v.z);
+			return temp;
+		}
+		public static implicit operator UnityEngine.Vector3 (ourVector3 v)
+		{
+			UnityEngine.Vector3 temp = new UnityEngine.Vector3(v.x, v.y, v.z);
+			return temp;
+		}
 
 	}
 
