@@ -119,7 +119,7 @@ namespace ourEngine {
 			q2.Normalize ();
 
 			ourQuaternion newQ = new ourQuaternion ();
-			newQ.w = (q2.w*q1.w - q2.x*q2.x - q2.y*q2.y - q2.z*q2.z);
+			newQ.w = (q2.w*q1.w - q2.x*q1.x - q2.y*q1.y - q2.z*q1.z);
 			newQ.x = (q2.w*q1.x + q2.x*q1.w - q2.y*q1.z + q2.z*q1.y);
 			newQ.y = (q2.w*q1.y + q2.x*q1.z + q2.y*q1.w - q2.z*q1.x);
 			newQ.z = (q2.w*q1.z - q2.x*q1.y + q2.y*q1.x + q2.z*q1.w);
@@ -141,14 +141,24 @@ namespace ourEngine {
 
 		public void Normalize () {
 			if (!isUnitary()) {
-				float normal = w + x + y + z;
+				float normal = UnityEngine.Mathf.Sqrt (UnityEngine.Mathf.Pow(w,2) + UnityEngine.Mathf.Pow(x,2) + UnityEngine.Mathf.Pow(y,2) + UnityEngine.Mathf.Pow(z,2));
 				w /= normal;
 				x /= normal;
 				y /= normal;
 				z /= normal;
 			}
-			UnityEngine.Assertions.Assert.IsTrue (isUnitary(), "Quaterion is not unitary");
+			//UnityEngine.Assertions.Assert.IsTrue (isUnitary(), "Quaterion is not unitary");
+		}
+
+		public static implicit operator ourQuaternion (UnityEngine.Quaternion q)
+		{
+			ourQuaternion temp = new ourQuaternion (q.x, q.y, q.z, q.w);
+			return temp;
+		}
+		public static implicit operator UnityEngine.Quaternion (ourQuaternion q)
+		{
+			UnityEngine.Quaternion temp = new UnityEngine.Quaternion(q.x,q.y,q.z,q.w);
+			return temp;
 		}
 	}
-
 }

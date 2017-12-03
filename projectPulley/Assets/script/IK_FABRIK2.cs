@@ -87,15 +87,18 @@ public class IK_FABRIK2 : MonoBehaviour
 				float mySen = ourVector3.Cross(v1.Normalize(), v2.Normalize()).GetMagnitude();
 				float alpha = Mathf.Atan2 (mySen, myCos);
 
-				//rotem amb el quaterion fet per aquest angle i eix
-				Quaternion newQ;
-				newQ.w = Mathf.Cos (alpha / 2);
-				newQ.x = axis.x * Mathf.Sin (alpha / 2);
-				newQ.y = axis.y * Mathf.Sin (alpha / 2);
-				newQ.z = axis.z * Mathf.Sin (alpha / 2);
+				//creem el quaternion amb aquesta nova rotacio
+				ourQuaternion newQ = new ourQuaternion(
+					axis.x * Mathf.Sin (alpha / 2),
+					axis.y * Mathf.Sin (alpha / 2),
+					axis.z * Mathf.Sin (alpha / 2),
+					Mathf.Cos (alpha / 2)
+				);
 
+				//apliquem rotacio
 				joints [i].position = copy [i];
-				joints [i].rotation = newQ * joints [i].rotation;
+				ourQuaternion newRot = newQ * (ourQuaternion)joints [i].rotation;
+				joints [i].rotation = newRot;
 
             }          
         }
