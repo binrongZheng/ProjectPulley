@@ -58,6 +58,18 @@ public class IK_FABRIK2 : MonoBehaviour
 						ourVector3 temp = (copy [i - 1] - copy [i]).Normalize(); //agafem vector de la recta
 						temp *= distances [i - 1]; //multipliquem per distancia per obtenir el tamany de vector que toca
 						copy [i - 1] = copy[i] + temp;
+
+						//PLANE
+						ourVector3 planeV1 = joints [i - 1].position - joints [i].position;
+						planeV1.Normalize ();
+						ourVector3 planeV2 = new ourVector3 (1, 0, 0);
+						ourVector3 planeN = ourVector3.Cross (planeV1, planeV2);
+						float d = planeN.z;
+
+						Debug.DrawLine (joints [i].position, joints [i].position + (Vector3)planeN * 3, Color.green);
+
+
+
 					}
 
                     // STAGE 2: BACKWARD REACHING
@@ -66,6 +78,8 @@ public class IK_FABRIK2 : MonoBehaviour
 						ourVector3 temp = (copy [i + 1] - copy [i]).Normalize();
 						temp *= distances [i];
 						copy [i + 1] = copy [i] + temp;
+
+
 					}
 
 					done = (ourVector3.Distance (copy [copy.Length - 1], (ourVector3)target.position) < threshold_distance);
@@ -94,6 +108,12 @@ public class IK_FABRIK2 : MonoBehaviour
 					axis.z * Mathf.Sin (alpha / 2),
 					Mathf.Cos (alpha / 2)
 				);
+				/*ourQuaternion newQ = new ourQuaternion(
+					axis.x * Mathf.Sin (alpha / 2),
+					0,
+					0,
+					Mathf.Cos (alpha / 2)
+				);*/
 
 				//apliquem rotacio
 				joints [i].position = copy [i];
