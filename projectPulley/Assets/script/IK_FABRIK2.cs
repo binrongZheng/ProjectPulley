@@ -57,18 +57,7 @@ public class IK_FABRIK2 : MonoBehaviour
 					for (int i = copy.Length - 1; i > 0; i--) {
 						ourVector3 temp = (copy [i - 1] - copy [i]).Normalize(); //agafem vector de la recta
 						temp *= distances [i - 1]; //multipliquem per distancia per obtenir el tamany de vector que toca
-						copy [i - 1] = copy[i] + temp;
-
-						//PLANE
-						ourVector3 planeV1 = joints [i - 1].position - joints [i].position;
-						planeV1.Normalize ();
-						ourVector3 planeV2 = new ourVector3 (1, 0, 0);
-						ourVector3 planeN = ourVector3.Cross (planeV1, planeV2);
-						float d = planeN.z;
-
-						Debug.DrawLine (joints [i].position, joints [i].position + (Vector3)planeN * 3, Color.green);
-
-
+						copy [i - 1] = copy[i] + temp;					
 
 					}
 
@@ -80,6 +69,40 @@ public class IK_FABRIK2 : MonoBehaviour
 						copy [i + 1] = copy [i] + temp;
 
 
+					}
+
+					//STAGE 3: AXIS CORRECTION
+					for (int i = 0; i < 4 ; i++){
+						//CREEM EL PLA
+						//Fem els dos vectors
+						Vector3 planeV1 = new Vector3();
+						if (i > 0) 
+							planeV1 = (joints [i - 1].position - joints [i].position);
+						else
+							planeV1 = new Vector3 (0, -1, 0);
+							
+
+						Vector3 planeV2 = new Vector3();
+						if (i < 3)
+							planeV2 = (joints [i + 1].position - joints [i].position);
+						else
+							planeV2 = new Vector3 (0, -1, 0);
+
+
+						//Treiem la normal
+						Vector3 planeN = Vector3.Cross (planeV1, planeV2).normalized;
+
+						//calculem d
+						float d = planeN.z;
+
+						//DEBUGS
+						Debug.DrawLine (joints [i].position, joints [i].position + planeV1, Color.blue);
+						Debug.DrawLine (joints [i].position, joints [i].position + planeV2, Color.blue);
+						Debug.DrawLine (joints [i].position, joints [i].position + planeN*3, Color.green);
+
+						//Comprovem si esta en el pla
+						/*if (Mathf.Abs (ourVector3.Dot (planeN, joints [i-1].position) - d) < 0.001)
+							print ("in plane");*/
 					}
 
 					done = (ourVector3.Distance (copy [copy.Length - 1], (ourVector3)target.position) < threshold_distance);
@@ -108,12 +131,6 @@ public class IK_FABRIK2 : MonoBehaviour
 					axis.z * Mathf.Sin (alpha / 2),
 					Mathf.Cos (alpha / 2)
 				);
-				/*ourQuaternion newQ = new ourQuaternion(
-					axis.x * Mathf.Sin (alpha / 2),
-					0,
-					0,
-					Mathf.Cos (alpha / 2)
-				);*/
 
 				//apliquem rotacio
 				joints [i].position = copy [i];

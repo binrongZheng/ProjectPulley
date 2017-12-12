@@ -47,6 +47,7 @@ namespace ourEngine {
 			res.z = v1.z - v2.z;
 			return res;
 		}
+
 		public static float Dot (ourVector3 v1, ourVector3 v2){
 			float res = v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
 			return res;
