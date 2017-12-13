@@ -38,14 +38,57 @@ public class IK_FABRIK2 : MonoBehaviour
         {
 			float targetRootDist = ourVector3.Distance(copy[0], target.position);
 
+
             // Update joint positions
             if (targetRootDist > distances.Sum())
             {
+				print ("Target unreachable");
                 // The target is unreachable -> Posar tots en linia
-				for (int i = 0; i < copy.Length - 1; i++) {
+				for (int i = 1; i < copy.Length - 1; i++) {
 					float distanceToTarget = ourVector3.Distance ((ourVector3)target.position, copy [i]);
 					float percentatgeToTarget = distances [i] / distanceToTarget;
 					copy [i + 1] = (1 - percentatgeToTarget) * copy [i] + percentatgeToTarget * (ourVector3)target.position; //l'anterior més el teu percentatge a la distancia del target
+
+
+					//CREEM EL PLA
+
+					//vector des de l'anterior a la nova pos
+					Vector3 joint2Copy = new Vector3 ();
+
+					//Fem els dos vectors
+					Vector3 planeV1 = new Vector3 ();
+					planeV1 = (joints [i - 1].position - joints [i].position);
+					joint2Copy = ((Vector3)copy [i] - joints [i - 1].position);							
+
+					Vector3 planeV2 = new Vector3 ();
+					if (i < 3) {
+						planeV2 = (joints [i + 1].position - joints [i].position);
+					} else {
+						planeV2 = new Vector3 (0, -1, 0);
+					}
+
+					//Treiem la normal
+					Vector3 planeN = Vector3.Cross (planeV1, planeV2).normalized;
+
+					//Comprovem si esta en el pla
+					bool inPlane = Mathf.Abs (Vector3.Dot (planeN, joint2Copy)) < 0.001;
+
+					//Si no esta al pla
+					if (!inPlane) {
+
+						//projectem aquest vector a la normal del pla
+						float dProd = Vector3.Dot (planeN, joint2Copy);
+						Vector3 vertComponent = planeN * dProd;
+
+						//posem copy[i] al pla verticalment no seguint el cercle
+						Vector3 targetPos = (Vector3)copy [i] - vertComponent;
+
+						//Trobem vector direccio cap a la projeccio del copy en el pla
+						Vector3 joint2Target = (targetPos - joints [i - 1].position).normalized;
+
+						//Posem el copy a la nova pos en el pla
+						copy [i] = joints [i - 1].position + joint2Target * joint2Copy.magnitude;
+					}
 				}
 			
             }
@@ -56,7 +99,7 @@ public class IK_FABRIK2 : MonoBehaviour
                 {
 					// STAGE 1: FORWARD REACHING
 					copy[copy.Length-1] = target.position;
-					for (int i = copy.Length - 1; i > 0; i--) {
+					for (int i = copy.Length - 1; i > 1; i--) {
 						ourVector3 temp = (copy [i - 1] - copy [i]).Normalize(); //agafem vector de la recta
 						temp *= distances [i - 1]; //multipliquem per distancia per obtenir el tamany de vector que toca
 						copy [i - 1] = copy[i] + temp;					
@@ -64,8 +107,8 @@ public class IK_FABRIK2 : MonoBehaviour
 					}
 
                     // STAGE 2: BACKWARD REACHING
-					copy[0] = joints[0].position;
-					for (int i = 0; i < copy.Length - 2; i++) {
+					copy[1] = joints[1].position;
+					for (int i = 1; i < copy.Length - 2; i++) {
 						ourVector3 temp = (copy [i + 1] - copy [i]).Normalize();
 						temp *= distances [i];
 						copy [i + 1] = copy [i] + temp;
@@ -74,7 +117,7 @@ public class IK_FABRIK2 : MonoBehaviour
 					}
 
 					//STAGE 3: AXIS CORRECTION
-					for (int i = 0; i < 4 ; i++){
+					for (int i = 1; i < 5 ; i++){
 						//CREEM EL PLA
 
 						//vector des de l'anterior a la nova pos
@@ -82,14 +125,8 @@ public class IK_FABRIK2 : MonoBehaviour
 
 						//Fem els dos vectors
 						Vector3 planeV1 = new Vector3();
-						if (i > 0) {
-							planeV1 = (joints [i - 1].position - joints [i].position);
-							joint2Copy = ((Vector3)copy [i] - joints [i - 1].position);
-						} else { 
-							planeV1 = new Vector3 (0, -1, 0);
-							joint2Copy = ((Vector3)copy [i] - joints [i + 1].position);
-						}
-							
+						planeV1 = (joints [i - 1].position - joints [i].position);
+						joint2Copy = ((Vector3)copy [i] - joints [i - 1].position);							
 
 						Vector3 planeV2 = new Vector3();
 						if (i < 3) {
@@ -103,7 +140,7 @@ public class IK_FABRIK2 : MonoBehaviour
 
 						//Comprovem si esta en el pla
 						bool inPlane = Mathf.Abs (Vector3.Dot (planeN, joint2Copy)) < 0.001;
-						print (inPlane);
+
 						//Si no esta al pla
 						if (!inPlane) {
 
@@ -164,7 +201,7 @@ public class IK_FABRIK2 : MonoBehaviour
     }
 
 	void CalculateDistances (ourVector3[] nodes) {
-		for (int i = 0; i < nodes.Length-1; i++) { //pq no peta?????!!!!!
+		for (int i = 0; i < nodes.Length-1; i++) { 
 			distances [i] = ourVector3.Distance (nodes [i], nodes [i + 1]);
 		}
 	}
