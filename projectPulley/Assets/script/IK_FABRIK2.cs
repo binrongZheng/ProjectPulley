@@ -14,6 +14,8 @@ public class IK_FABRIK2 : MonoBehaviour
     private bool done;
 		
 	private float threshold_distance = 0.1f;
+	private float maxIterations = 50;
+	private float currInterations = 0;
 
     void Start()
     {
@@ -40,17 +42,17 @@ public class IK_FABRIK2 : MonoBehaviour
             if (targetRootDist > distances.Sum())
             {
                 // The target is unreachable -> Posar tots en linia
-				for (int i = 0; i < copy.Length-1;i++){
+				for (int i = 0; i < copy.Length - 1; i++) {
 					float distanceToTarget = ourVector3.Distance ((ourVector3)target.position, copy [i]);
 					float percentatgeToTarget = distances [i] / distanceToTarget;
 					copy [i + 1] = (1 - percentatgeToTarget) * copy [i] + percentatgeToTarget * (ourVector3)target.position; //l'anterior més el teu percentatge a la distancia del target
 				}
-
+			
             }
             else
             {
                 // The target is reachable
-				while (!done)
+				while (!done && currInterations < maxIterations)
                 {
 					// STAGE 1: FORWARD REACHING
 					copy[copy.Length-1] = target.position;
@@ -74,39 +76,59 @@ public class IK_FABRIK2 : MonoBehaviour
 					//STAGE 3: AXIS CORRECTION
 					for (int i = 0; i < 4 ; i++){
 						//CREEM EL PLA
+
+						//vector des de l'anterior a la nova pos
+						Vector3 joint2Copy = new Vector3();
+
 						//Fem els dos vectors
 						Vector3 planeV1 = new Vector3();
-						if (i > 0) 
+						if (i > 0) {
 							planeV1 = (joints [i - 1].position - joints [i].position);
-						else
+							joint2Copy = ((Vector3)copy [i] - joints [i - 1].position);
+						} else { 
 							planeV1 = new Vector3 (0, -1, 0);
+							joint2Copy = ((Vector3)copy [i] - joints [i + 1].position);
+						}
 							
 
 						Vector3 planeV2 = new Vector3();
-						if (i < 3)
+						if (i < 3) {
 							planeV2 = (joints [i + 1].position - joints [i].position);
-						else
+						} else {
 							planeV2 = new Vector3 (0, -1, 0);
-
+						}
 
 						//Treiem la normal
 						Vector3 planeN = Vector3.Cross (planeV1, planeV2).normalized;
 
-						//calculem d
-						float d = planeN.z;
-
-						//DEBUGS
-						Debug.DrawLine (joints [i].position, joints [i].position + planeV1, Color.blue);
-						Debug.DrawLine (joints [i].position, joints [i].position + planeV2, Color.blue);
-						Debug.DrawLine (joints [i].position, joints [i].position + planeN*3, Color.green);
-
 						//Comprovem si esta en el pla
-						/*if (Mathf.Abs (ourVector3.Dot (planeN, joints [i-1].position) - d) < 0.001)
-							print ("in plane");*/
+						bool inPlane = Mathf.Abs (Vector3.Dot (planeN, joint2Copy)) < 0.001;
+						print (inPlane);
+						//Si no esta al pla
+						if (!inPlane) {
+
+							//projectem aquest vector a la normal del pla
+							float dProd = Vector3.Dot (planeN, joint2Copy);
+							Vector3 vertComponent = planeN * dProd;
+
+							//posem copy[i] al pla verticalment no seguint el cercle
+							Vector3 targetPos = (Vector3)copy[i] - vertComponent;
+
+							//Trobem vector direccio cap a la projeccio del copy en el pla
+							Vector3 joint2Target = (targetPos - joints[i-1].position).normalized;
+
+							//Posem el copy a la nova pos en el pla
+							copy [i] = joints [i - 1].position + joint2Target * joint2Copy.magnitude;
+
+						}
+
 					}
 
 					done = (ourVector3.Distance (copy [copy.Length - 1], (ourVector3)target.position) < threshold_distance);
+					currInterations++;
                 }
+
+				currInterations = 0;
             }
 
             // Update original joint rotations
