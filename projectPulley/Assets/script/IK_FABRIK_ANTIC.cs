@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 using ourEngine;
 
-public class IK_FABRIK2 : MonoBehaviour
+public class IK_FABRIK_ANTIC : MonoBehaviour
 {
     public Transform[] joints;
     public Transform target;
