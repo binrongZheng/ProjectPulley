@@ -8,13 +8,11 @@ public class IK_With_Pivot : MonoBehaviour {
 	public Transform target;
 
 	public Transform pivot;
+	private Vector3 pivotCopy;
 
 	private Vector3[] copy;
-	private Vector3 pivotCopy;
 	private float[] distances;		
 	private bool done;
-
-	private bool aligned;
 
 	private float threshold_distance = 0.1f;
 
