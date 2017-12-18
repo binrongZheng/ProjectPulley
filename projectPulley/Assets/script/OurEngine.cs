@@ -64,7 +64,7 @@ namespace ourEngine {
 			return res.GetMagnitude();
 		}
 
-		public ourVector3 Normalize () {
+		public ourVector3 GetNormalized () {
 			float magnitude = GetMagnitude ();
 			ourVector3 res = new ourVector3 ();
 

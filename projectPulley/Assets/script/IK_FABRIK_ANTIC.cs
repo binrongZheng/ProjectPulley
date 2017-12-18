@@ -6,7 +6,7 @@ using ourEngine;
 
 public class IK_FABRIK_ANTIC : MonoBehaviour
 {
-    public Transform[] joints;
+    /*public Transform[] joints;
     public Transform target;
 
 	private ourVector3[] copy;		
@@ -51,7 +51,7 @@ public class IK_FABRIK_ANTIC : MonoBehaviour
 
 
 					//CREEM EL PLA
-
+*/
 					//vector des de l'anterior a la nova pos
 					/*Vector3 joint2Copy = new Vector3 ();
 
@@ -89,7 +89,7 @@ public class IK_FABRIK_ANTIC : MonoBehaviour
 						//Posem el copy a la nova pos en el pla
 						copy [i] = joints [i - 1].position + joint2Target * joint2Copy.magnitude;
 					}*/
-				}
+				/*}
 			
             }
             else
@@ -161,7 +161,7 @@ public class IK_FABRIK_ANTIC : MonoBehaviour
 
 					}*/
 
-					done = (ourVector3.Distance (copy [copy.Length - 1], (ourVector3)target.position) < threshold_distance);
+				/*	done = (ourVector3.Distance (copy [copy.Length - 1], (ourVector3)target.position) < threshold_distance);
 					currInterations++;
                 }
 
@@ -204,5 +204,5 @@ public class IK_FABRIK_ANTIC : MonoBehaviour
 		for (int i = 0; i < nodes.Length-1; i++) { 
 			distances [i] = ourVector3.Distance (nodes [i], nodes [i + 1]);
 		}
-	}
+	}*/
 }

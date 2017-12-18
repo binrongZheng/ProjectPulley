@@ -11,7 +11,7 @@ public class MoveTarget : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if (Input.GetKey(KeyCode.W) && transform.position.y < 3){
+		if (Input.GetKey(KeyCode.W) && transform.position.y < 5){
 			transform.position += new Vector3(0,2 * Time.deltaTime,0);
 		}
 		if (Input.GetKey(KeyCode.S) && transform.position.y > 0){
