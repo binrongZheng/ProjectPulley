@@ -1,4 +1,4 @@
 sceneSetups:
-- path: Assets/Scenes/RoboticArm_Fabrik.unity
+- path: Assets/Scenes/proves.unity
   isLoaded: 1
   isActive: 1

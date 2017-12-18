@@ -44,7 +44,7 @@ public class IK_FABRIK2 : MonoBehaviour
             {
 				print ("Target unreachable");
                 // The target is unreachable -> Posar tots en linia
-				for (int i = 1; i < copy.Length - 1; i++) {
+				for (int i = 0; i < copy.Length - 1; i++) {
 					float distanceToTarget = ourVector3.Distance ((ourVector3)target.position, copy [i]);
 					float percentatgeToTarget = distances [i] / distanceToTarget;
 					copy [i + 1] = (1 - percentatgeToTarget) * copy [i] + percentatgeToTarget * (ourVector3)target.position; //l'anterior més el teu percentatge a la distancia del target
@@ -53,7 +53,7 @@ public class IK_FABRIK2 : MonoBehaviour
 					//CREEM EL PLA
 
 					//vector des de l'anterior a la nova pos
-					Vector3 joint2Copy = new Vector3 ();
+					/*Vector3 joint2Copy = new Vector3 ();
 
 					//Fem els dos vectors
 					Vector3 planeV1 = new Vector3 ();
@@ -88,7 +88,7 @@ public class IK_FABRIK2 : MonoBehaviour
 
 						//Posem el copy a la nova pos en el pla
 						copy [i] = joints [i - 1].position + joint2Target * joint2Copy.magnitude;
-					}
+					}*/
 				}
 			
             }
@@ -99,7 +99,7 @@ public class IK_FABRIK2 : MonoBehaviour
                 {
 					// STAGE 1: FORWARD REACHING
 					copy[copy.Length-1] = target.position;
-					for (int i = copy.Length - 1; i > 1; i--) {
+					for (int i = copy.Length - 1; i > 0; i--) {
 						ourVector3 temp = (copy [i - 1] - copy [i]).Normalize(); //agafem vector de la recta
 						temp *= distances [i - 1]; //multipliquem per distancia per obtenir el tamany de vector que toca
 						copy [i - 1] = copy[i] + temp;					
@@ -117,7 +117,7 @@ public class IK_FABRIK2 : MonoBehaviour
 					}
 
 					//STAGE 3: AXIS CORRECTION
-					for (int i = 1; i < 5 ; i++){
+					/*for (int i = 1; i < 5 ; i++){
 						//CREEM EL PLA
 
 						//vector des de l'anterior a la nova pos
@@ -159,7 +159,7 @@ public class IK_FABRIK2 : MonoBehaviour
 
 						}
 
-					}
+					}*/
 
 					done = (ourVector3.Distance (copy [copy.Length - 1], (ourVector3)target.position) < threshold_distance);
 					currInterations++;
