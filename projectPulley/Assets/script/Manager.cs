@@ -17,7 +17,7 @@ public class Manager : MonoBehaviour {
 	public float ropeDiametre;
 
 	[Range (0.0f,1.0f)]
-	public float inputDiatance;
+	public float inputDistance;
 
 	//private
 	float pulleyMass;
@@ -77,27 +77,38 @@ public class Manager : MonoBehaviour {
 		if (MA == 1) overHaulingFactor = 1.02f;
 		else if (MA == 2) overHaulingFactor = 2.1f;
 
-		//calculate 
-
+		 
+		//CALCULEM TENSIONS
+		//en els nostres 3 casos la primera tensio és equivalent a aixo
 		tension[0]=p_load/MA;
-
+		//setegem la resta
 		for(int i=1;i<numTension;i++){
-			if (i == numTension - 1) {
+			//if (i == numTension - 1) {
 				tension [i] = tension [i - 1] * Mathf.Pow (eulerNum,staticCoef*beta*Mathf.Deg2Rad);
-				longituds [i] += inputDiatance;
+				//longituds [i] += inputDistance;
 
-			} else {
+			/*} else {
 				tension [i] = tension [i - 1] * Mathf.Pow (eulerNum,staticCoef*180*Mathf.Deg2Rad);
-				longituds [i] -= inputDiatance / MA;
-
-			}
+				longituds [i] -= inputDistance / MA;
+			}*/
 		}
-		print (tension[0]);
+
+		//CALCULEM LONGITUDS
+		if (systemType == SystemType.fixedPulley){
+			longituds [0] -= inputDistance;
+			longituds [1] += inputDistance;
+
+			//oF = T2 + (l1-l2)*P_rope/m
+			outputForce = tension [numTension - 1] + ( (longituds [0]-longituds[1]) * P_Rope_Metre);
+		}
+
+
+		/*print (tension[0]);
 		print (tension[1]);
 		print (longituds[0]);
-		print (longituds[1]);
+		print (longituds[1]);*/
 
-		outputForce = tension [numTension - 1] - longituds [numTension - 1] * P_Rope_Metre;
+
 
 		print (outputForce);
 	}
