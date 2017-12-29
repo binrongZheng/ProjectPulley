@@ -117,8 +117,8 @@ public class Manager : MonoBehaviour {
 
 		//Movem la caixa i les politges mobils aplicant la outputForce que hem calculat
 		if (load.position.y <= maxY){
-			velocity += (outputForce/boxMass)*Time.deltaTime/10;
-			load.position += new Vector3(0, velocity * Time.deltaTime/10, 0);
+            load.position += new Vector3(0, velocity * Time.deltaTime / 10, 0);
+            velocity += (outputForce/boxMass)*Time.deltaTime/10;			
 		}
 
 	}
