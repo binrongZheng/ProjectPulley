@@ -16,7 +16,7 @@ public class Manager : MonoBehaviour {
 	public float alpha;
 	public float ropeDiametre;
 
-	[Range (0.0f,1.0f)]
+	[Range (0.0f,3.0f)]
 	public float inputDistance;
 
 	//private
@@ -38,6 +38,11 @@ public class Manager : MonoBehaviour {
 	float gravity=9.81f;
 	float diferentDistanece;
 
+	//Per moure la caixa
+	private float velocity;
+	private float maxY;
+	public Transform load;
+
 	// Use this for initialization
 	void Start () {
 		switch (systemType) {
@@ -45,19 +50,19 @@ public class Manager : MonoBehaviour {
 			MA = 1;
 			numPulley = 0;
 			numTension = 2;
-			longituds = new float[]{ 1, 1 };
+			longituds = new float[]{ 3, 3 };
 			break;
 		case SystemType.movablePulley:
 			MA = 2;
 			numPulley = 1;
 			numTension = 2;
-			longituds = new float[]{ 1, 1 };
+			longituds = new float[]{ 3, 3 };
 			break;
 		case SystemType.twoPulleySystem:
 			MA = 2;
 			numPulley = 1;
 			numTension = 3;
-			longituds = new float[]{ 1, 0.5f,0.5f };
+			longituds = new float[]{ 3, 1.5f,1.5f };
 
 			break;
 		default:
@@ -102,20 +107,20 @@ public class Manager : MonoBehaviour {
 			outputForce = tension [numTension - 1] + ( (longituds [0]-longituds[1]) * P_Rope_Metre);
 		}
 
+		//calculem la posicio final de la caixa
+		maxY = load.position.y + inputDistance;
 
-		/*print (tension[0]);
-		print (tension[1]);
-		print (longituds[0]);
-		print (longituds[1]);*/
-
-
-
-		print (outputForce);
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		
+
+		//Movem la caixa i les politges mobils aplicant la outputForce que hem calculat
+		if (load.position.y <= maxY){
+			velocity += (outputForce/boxMass)*Time.deltaTime/10;
+			load.position += new Vector3(0, velocity * Time.deltaTime/10, 0);
+		}
+
 	}
 
 	void setPulleyValue(){
