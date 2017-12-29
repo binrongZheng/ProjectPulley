@@ -177,6 +177,9 @@ namespace ourEngine {
         private ourVector3 velocity = new ourVector3();
         private ourVector3 force = new ourVector3();
 
+        private ourVector3 rightForce;
+        private ourVector3 leftForce;
+
         private float mass;
 
         public ourParticle (ourVector3 pos, float m)
@@ -190,10 +193,26 @@ namespace ourEngine {
             position += velocity * delta;
             velocity += (force / mass) * delta;
             //calculem les forces de la corda
-
-            //sumem la gravetat
-            force += new ourVector3(0, -9.81f * delta, 0);
+            force = rightForce + leftForce;
+            //apliquem la gravetat
+            force += new ourVector3(0, -9.81f * mass * delta, 0);
             
+        }
+
+        public void CalculateStringForces(ourParticle leftP, ourParticle rightP, float ke, float kd, float longitude) {
+            if (rightP != null)
+            {
+                ourVector3 AB = position - rightP.GetPos();
+                rightForce = -1 * (ke * (AB.GetMagnitude() - longitude) + kd * ourVector3.Dot((velocity - rightP.velocity), (AB / AB.GetMagnitude()))) * AB / AB.GetMagnitude();
+            }
+            else rightForce = new ourVector3();
+            if (leftP != null)
+            {
+                ourVector3 AB = position - leftP.GetPos();
+                leftForce = -1 * (ke * (AB.GetMagnitude() - longitude) + kd * ourVector3.Dot((velocity - leftP.velocity), (AB / AB.GetMagnitude()))) * AB / AB.GetMagnitude();
+            }
+            else leftForce = new ourVector3();
+
         }
 
         public ourVector3 GetPos() {
