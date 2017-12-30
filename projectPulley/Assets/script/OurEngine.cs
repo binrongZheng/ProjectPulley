@@ -173,12 +173,12 @@ namespace ourEngine {
 
     public class ourParticle {
 
-        private ourVector3 position;
-        private ourVector3 velocity = new ourVector3();
+        public ourVector3 position;
+        public ourVector3 velocity = new ourVector3();
         private ourVector3 force = new ourVector3();
 
-        private ourVector3 rightForce;
-        private ourVector3 leftForce;
+        public ourVector3 rightForce;
+        public ourVector3 leftForce;
 
         private float mass;
 
@@ -192,8 +192,8 @@ namespace ourEngine {
         }
         public void Update(float delta)
         {
-            if (!isFixed) {
-                //Apliquem el solver de euler
+            if (!isFixed) { //si no es l'agarre apliquem el solver de euler
+                
                 position += velocity * delta;
                 velocity += (force / mass) * delta;
                 //calculem les forces de la corda
@@ -205,13 +205,15 @@ namespace ourEngine {
             
         }
 
-        public void CalculateStringForces(ourParticle leftP, ourParticle rightP, float ke, float kd, float longitude) {
+       /* public void CalculateStringForces(ourParticle leftP, ourParticle rightP, float ke, float kd, float longitude) {
             if (rightP != null)
             {
                 
-                ourVector3 AB = position - rightP.GetPos();
-                UnityEngine.Debug.Log (AB.x + "," + AB.y + "," + AB.z);
-                rightForce = -1 * (ke * (AB.GetMagnitude() - longitude) + kd * ourVector3.Dot((velocity - rightP.velocity), (AB / AB.GetMagnitude()))) * AB / AB.GetMagnitude();
+                ourVector3 springVector = position - rightP.GetPos();
+                float r = springVector.GetMagnitude();
+                //UnityEngine.Debug.Log (springVector.x + "," + springVector.y + "," + springVector.z);
+
+                rightForce = -1 * (ke * (r - longitude) + kd * ourVector3.Dot((velocity - rightP.velocity), (springVector / r))) * springVector / r;
             }
             else
             {
@@ -222,16 +224,16 @@ namespace ourEngine {
             
             if (leftP != null)
             {
-                ourVector3 AB = position - leftP.GetPos();
-                leftForce = -1 * (ke * (AB.GetMagnitude() - longitude) + kd * ourVector3.Dot((velocity - leftP.velocity), (AB / AB.GetMagnitude()))) * AB / AB.GetMagnitude();
+                ourVector3 springVector = position - leftP.GetPos();
+                float r = springVector.GetMagnitude();
+
+                leftForce = -1 * (ke * (r - longitude) + kd * ourVector3.Dot((velocity - leftP.velocity), (springVector / r))) * springVector / r;
             }
             else
                 leftForce = new ourVector3(0,0,0);
 
-        }
+        }*/
 
-        public ourVector3 GetPos() {
-            return position;
-        }
+        
     }
 }
