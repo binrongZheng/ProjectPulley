@@ -182,36 +182,51 @@ namespace ourEngine {
 
         private float mass;
 
-        public ourParticle (ourVector3 pos, float m)
+        private bool isFixed;
+
+        public ourParticle (ourVector3 pos, float m, bool isF)
         {
             position = pos;
             mass = m;
+            isFixed = isF;
         }
         public void Update(float delta)
         {
-            //Apliquem el solver de euler
-            position += velocity * delta;
-            velocity += (force / mass) * delta;
-            //calculem les forces de la corda
-            force = rightForce + leftForce;
-            //apliquem la gravetat
-            force += new ourVector3(0, -9.81f * mass * delta, 0);
+            if (!isFixed) {
+                //Apliquem el solver de euler
+                position += velocity * delta;
+                velocity += (force / mass) * delta;
+                //calculem les forces de la corda
+                //UnityEngine.Debug.Log(rightForce.x + "," + rightForce.y + "," + rightForce.z);
+                force = rightForce + leftForce;
+                //apliquem la gravetat
+                force += new ourVector3(0, -9.81f * mass * delta, 0);
+            }          
             
         }
 
         public void CalculateStringForces(ourParticle leftP, ourParticle rightP, float ke, float kd, float longitude) {
             if (rightP != null)
             {
+                
                 ourVector3 AB = position - rightP.GetPos();
+                UnityEngine.Debug.Log (AB.x + "," + AB.y + "," + AB.z);
                 rightForce = -1 * (ke * (AB.GetMagnitude() - longitude) + kd * ourVector3.Dot((velocity - rightP.velocity), (AB / AB.GetMagnitude()))) * AB / AB.GetMagnitude();
             }
-            else rightForce = new ourVector3();
+            else
+            {
+                rightForce = new ourVector3(0, 0, 0);
+                
+            }               
+                
+            
             if (leftP != null)
             {
                 ourVector3 AB = position - leftP.GetPos();
                 leftForce = -1 * (ke * (AB.GetMagnitude() - longitude) + kd * ourVector3.Dot((velocity - leftP.velocity), (AB / AB.GetMagnitude()))) * AB / AB.GetMagnitude();
             }
-            else leftForce = new ourVector3();
+            else
+                leftForce = new ourVector3(0,0,0);
 
         }
 
