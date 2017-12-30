@@ -14,6 +14,10 @@ public class RopeManager : MonoBehaviour {
     public float segmentLongitude;
     public float maxSeparation;
 
+    public Transform pulley;
+
+    ourParticle prova = new ourParticle(new ourVector3(0, 5, 1), 1, false);
+
     // Use this for initialization
     void Start()
     {
@@ -23,13 +27,14 @@ public class RopeManager : MonoBehaviour {
         {
             realParticles[i] = rope.GetChild(i);            
         }
-
+        
         //iniciem les nostra simulacio a la posicio de la corda real
         particles = new ourParticle[realParticles.Length];
         particles[0] = new ourParticle(realParticles[0].position, 1, true); //la primera esta enganxada
         for (int i = 1; i < realParticles.Length; i++) {
             particles[i] = new ourParticle(realParticles[i].position, 1, false);
         }       
+        
 
     }
 
@@ -39,7 +44,10 @@ public class RopeManager : MonoBehaviour {
         CalculateSpringForces();
         UpdateSimuation();
         DistanceCorrection();
-        SetRealPositions();        
+        SetRealPositions();
+        
+        
+
     }
 
     void CalculateSpringForces()
@@ -79,11 +87,11 @@ public class RopeManager : MonoBehaviour {
                 particles[i].CalculateStringForces(particles[i - 1], null, ke, kd, segmentLongitude);
             */
 
+            //Detectar colisions
+            particles[i].PulleyCollision(pulley.position, 0.5f, Time.deltaTime);
+
             //Simulem moviment
             particles[i].Update(Time.deltaTime);
-
-            //Detectar colisions
-            
         }
     }
 

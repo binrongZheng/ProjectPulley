@@ -184,6 +184,8 @@ namespace ourEngine {
 
         private bool isFixed;
 
+        
+                
         public ourParticle (ourVector3 pos, float m, bool isF)
         {
             position = pos;
@@ -201,7 +203,51 @@ namespace ourEngine {
                 force = rightForce + leftForce;
                 //apliquem la gravetat
                 force += new ourVector3(0, -9.81f * mass * delta, 0);
-            }          
+            }
+            
+        }
+
+        public void PulleyCollision(ourVector3 pulleyPos, float radius, float delta)
+        {
+            //calculem quina seria la seva seguent posicio
+            ourVector3 posCreuada = position + delta * velocity; ;
+
+            ourVector3 distVector = posCreuada - pulleyPos;
+            float dist = distVector.GetMagnitude();
+            
+            if (dist < radius)
+            {
+                
+                //trobem el punt d'interseccio
+                ourVector3 dir = velocity.GetNormalized(); //normalitzem velocitat per fer la recta que surt de PosActual i va en dir de la velocitat
+                float distIntersec = -1*ourVector3.Dot(dir, (position - pulleyPos)) - UnityEngine.Mathf.Sqrt((ourVector3.Dot(dir, (position - pulleyPos))) * (ourVector3.Dot(dir, (position - pulleyPos))) - ( (position - pulleyPos).GetMagnitude() * (position - pulleyPos).GetMagnitude() ) + (radius * radius));
+                ourVector3 intersectionPoint = position + dir * distIntersec;
+
+                //comprovem si el punt d'interseccio que hem calculat esta entre pos i posCreuada
+                //if ( (position - intersectionPoint).GetMagnitude() + (intersectionPoint - posCreuada).GetMagnitude() != (position - posCreuada).GetMagnitude() )
+                    // distIntersec = -ourVector3.Dot(dir, (position - pulleyPos)) + UnityEngine.Mathf.Sqrt((ourVector3.Dot(dir, (position - pulleyPos))) * (ourVector3.Dot(dir, (position - pulleyPos))) - ((position - pulleyPos).GetMagnitude() * (position - pulleyPos).GetMagnitude()) + (radius * radius));
+
+                 //vector interseccio-centre sera la normal del pla
+                 ourVector3 n = (intersectionPoint - pulleyPos).GetNormalized();
+
+                 //calcular d del pla i pos de rebot
+                 float d = -1*ourVector3.Dot(n, intersectionPoint);
+                 position = posCreuada - 2 * (ourVector3.Dot(n, posCreuada) + d) * n;
+                UnityEngine.Debug.DrawLine(position, position + velocity * 5, UnityEngine.Color.blue);
+                
+                //elasticitat			
+                velocity += -(2) * (n * ourVector3.Dot(n, velocity));
+                
+                //friccion
+               // ourVector3 vN = ourVector3.Dot(n, velocity) * n;
+                //velocity += -1 * (velocity - vN); //velocity = velocity -u*vT
+
+                UnityEngine.Debug.DrawLine(position, position + velocity * 5, UnityEngine.Color.green);
+
+                UnityEditor.EditorApplication.isPaused = true;
+
+
+            }
             
         }
 
