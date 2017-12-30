@@ -15,8 +15,9 @@ public class RopeManager : MonoBehaviour {
     public float maxSeparation;
 
     public Transform pulley;
+    public GameObject provaObj;
 
-    ourParticle prova = new ourParticle(new ourVector3(0, 5, 1), 1, false);
+    ourParticle prova = new ourParticle(new ourVector3(0, 5, 0), 1, false);
 
     // Use this for initialization
     void Start()
@@ -45,9 +46,11 @@ public class RopeManager : MonoBehaviour {
         UpdateSimuation();
         DistanceCorrection();
         SetRealPositions();
-        
-        
 
+        prova.PulleyCollision(pulley.position, 0.5f, Time.deltaTime);
+        prova.Update(Time.deltaTime);
+        
+        provaObj.transform.position = prova.position;
     }
 
     void CalculateSpringForces()
