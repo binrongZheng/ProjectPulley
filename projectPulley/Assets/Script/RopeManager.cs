@@ -31,7 +31,7 @@ public class RopeManager : MonoBehaviour {
         
         //iniciem les nostra simulacio a la posicio de la corda real
         particles = new ourParticle[realParticles.Length];
-        particles[0] = new ourParticle(realParticles[0].position, 1, true); //la primera esta enganxada
+        particles[0] = new ourParticle(realParticles[0].position, 1, false); //la primera esta enganxada
         for (int i = 1; i < realParticles.Length; i++) {
             particles[i] = new ourParticle(realParticles[i].position, 1, false);
         }       
@@ -42,15 +42,19 @@ public class RopeManager : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
-        CalculateSpringForces();
-        UpdateSimuation();
-        DistanceCorrection();
-        SetRealPositions();
+        //CalculateSpringForces();
+       // UpdateSimuation();
+        //DistanceCorrection();
+        //SetRealPositions();
 
-        prova.PulleyCollision(pulley.position, 0.5f, Time.deltaTime);
+        prova.PulleyCollision(pulley.position, 1, Time.deltaTime);
         prova.Update(Time.deltaTime);
         
         provaObj.transform.position = prova.position;
+
+		UpdateSimuation ();
+		DistanceCorrection ();
+		SetRealPositions ();
     }
 
     void CalculateSpringForces()
@@ -91,7 +95,7 @@ public class RopeManager : MonoBehaviour {
             */
 
             //Detectar colisions
-            particles[i].PulleyCollision(pulley.position, 0.5f, Time.deltaTime);
+            particles[i].PulleyCollision(pulley.position, 1.005f, Time.deltaTime);
 
             //Simulem moviment
             particles[i].Update(Time.deltaTime);
@@ -115,23 +119,17 @@ public class RopeManager : MonoBehaviour {
     {
         for (int i = 0; i < realParticles.Length; i++)
         {
-            if (i > 0 && ( (particles[i].position - particles[i - 1].position).GetMagnitude() > (segmentLongitude + segmentLongitude * maxSeparation) ) )
+            if (i > 0 && ( (particles[i].position - particles[i - 1].position).magnitude > (segmentLongitude + segmentLongitude * maxSeparation) ) )
             {
                 if (i-1 == 0)
-                    particles[i].position -= (particles[i].position - particles[i - 1].position).GetNormalized() * ((particles[i].position - particles[i - 1].position).GetMagnitude() - (segmentLongitude));
+                    particles[i].position -= (particles[i].position - particles[i - 1].position).normalized * ((particles[i].position - particles[i - 1].position).magnitude - (segmentLongitude));
                 else
                 {
-                    particles[i].position -= (particles[i].position - particles[i - 1].position).GetNormalized() * (((particles[i].position - particles[i - 1].position).GetMagnitude() - (segmentLongitude)) / 2);
-                    particles[i - 1].position += (particles[i].position - particles[i - 1].position).GetNormalized() * (((particles[i].position - particles[i - 1].position).GetMagnitude() - (segmentLongitude)) / 2);
+                    particles[i].position -= (particles[i].position - particles[i - 1].position).normalized * (((particles[i].position - particles[i - 1].position).magnitude - (segmentLongitude)) / 2);
+                    particles[i - 1].position += (particles[i].position - particles[i - 1].position).normalized * (((particles[i].position - particles[i - 1].position).magnitude - (segmentLongitude)) / 2);
                 }
-            }
+            }            
             
-            if (i > 0 && i < realParticles.Length-1 && ((particles[i].position - particles[i + 1].position).GetMagnitude() > (segmentLongitude + segmentLongitude * maxSeparation)))
-            {               
-                particles[i].position -= (particles[i].position - particles[i + 1].position).GetNormalized() * (((particles[i].position - particles[i + 1].position).GetMagnitude() - (segmentLongitude)) / 2);
-                particles[i + 1].position += (particles[i].position - particles[i + 1].position).GetNormalized() * (((particles[i].position - particles[i + 1].position).GetMagnitude() - (segmentLongitude)) / 2);
-                
-            }
         }
     }
 }
