@@ -182,9 +182,7 @@ namespace ourEngine {
 
         private float mass;
 
-        private bool isFixed;
-
-        
+		public bool isFixed;        
                 
         public ourParticle (Vector3 pos, float m, bool isF)
         {

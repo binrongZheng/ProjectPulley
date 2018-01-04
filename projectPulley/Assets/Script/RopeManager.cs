@@ -30,9 +30,8 @@ public class RopeManager : MonoBehaviour {
         }
         
         //iniciem les nostra simulacio a la posicio de la corda real
-        particles = new ourParticle[realParticles.Length];
-        particles[0] = new ourParticle(realParticles[0].position, 1, false); //la primera esta enganxada
-        for (int i = 1; i < realParticles.Length; i++) {
+        particles = new ourParticle[realParticles.Length];        
+        for (int i = 0; i < realParticles.Length; i++) {
             particles[i] = new ourParticle(realParticles[i].position, 1, false);
         }       
         
@@ -121,7 +120,7 @@ public class RopeManager : MonoBehaviour {
         {
             if (i > 0 && ( (particles[i].position - particles[i - 1].position).magnitude > (segmentLongitude + segmentLongitude * maxSeparation) ) )
             {
-                if (i-1 == 0)
+				if (particles[i-1].isFixed)
                     particles[i].position -= (particles[i].position - particles[i - 1].position).normalized * ((particles[i].position - particles[i - 1].position).magnitude - (segmentLongitude));
                 else
                 {
