@@ -41,18 +41,18 @@ public class RopeManager : MonoBehaviour {
 		particles = new ourParticle[rope.childCount];        
         for (int i = 0; i < numParticles; i++) {
 			particles[i] = new ourParticle(rope.GetChild(i).position, 1, false);
-			particles[i].tooSeparated = true;
-        }       
-		particles[0].tooSeparated = false;
+        }
+
 
     }
 
     // Update is called once per frame
     void Update()
     {
+		
        	CalculateSpringForces();
 		UpdateSimuation ();
-		DistanceCorrection ();
+		DistanceCorrection();
 		SetRealPositions ();
 
 		//int a = 8;
@@ -71,7 +71,7 @@ public class RopeManager : MonoBehaviour {
 				
                 Vector3 springVector = particles[i].position - particles[i + 1].position;
 				float r = springVector.magnitude;
-				r = Mathf.Round (r *10f)/10f;
+				r = Mathf.Round (r *100f)/100f;
 
                 particles[i].rightForce = -1 * (ke * (r - segmentLongitude) + kd * ourVector3.Dot((particles[i].velocity - particles[i + 1].velocity), (springVector / r))) * springVector / r;
 				//print(" num " + i + ": " + particles[i].rightForce.z);
@@ -84,7 +84,7 @@ public class RopeManager : MonoBehaviour {
 				if (i == numParticles -1){ //a la ultima la tenim que calcular b pq no li hem calculat una right force a partir de la cual treure la left force
 					ourVector3 springVector = particles[i].position - particles[i-1].position;
 					float r = springVector.GetMagnitude();
-					r = Mathf.Round (r *10f)/10f;
+					r = Mathf.Round (r *100f)/100f;
 
 					particles[i].leftForce = -1 * (ke * (r - segmentLongitude) + kd * ourVector3.Dot((particles[i].velocity - particles[i-1].velocity), (springVector / r))) * springVector / r;
 				}
@@ -135,39 +135,52 @@ public class RopeManager : MonoBehaviour {
 
     void DistanceCorrection()
     {
+		
 		for (int i = 0; i < numParticles; i++)
         {			
+			
+			if (i < numParticles-1){
 
-			/*if (i < numParticles-1 && (particles[i].position - particles[i + 1].position).magnitude > (segmentLongitude + segmentLongitude * maxSeparation)  ) //si estan massa separats
-			{
-				//if (particles[i+1].isFixed)
+				Vector3 distVec = (particles[i].position - particles[i + 1].position);
+				distVec.z =  Mathf.Round (distVec.z * 100f)/100f;
+
+				if (distVec.magnitude > (segmentLongitude + segmentLongitude * maxSeparation) ) //si estan massa separats
+				{
+					//if (particles[i+1].isFixed)
 					//particles[i].position -= (particles[i].position - particles[i + 1].position).normalized * ((particles[i].position - particles[i + 1].position).magnitude - (segmentLongitude));
-				//else
-				//{
-					Vector3 correction1 = (particles[i].position - particles[i + 1].position).normalized * (((particles[i].position - particles[i + 1].position).magnitude - (segmentLongitude)) / 2);
+					//else
+					//{
+					Vector3 correction1 = distVec.normalized * ((distVec.magnitude - (segmentLongitude)) / 2);
 					particles[i].position -= correction1;
-					Vector3 correction2 = (particles[i].position - particles[i + 1].position).normalized * (((particles[i].position - particles[i + 1].position).magnitude - (segmentLongitude)) / 2);
+					Vector3 correction2 = distVec.normalized * ((distVec.magnitude - (segmentLongitude)) / 2);
 					particles[i + 1].position += correction2;
-				//}
-			}*/
-
-			if (i>0 && (particles[i].position - particles[i - 1].position).magnitude > (segmentLongitude + segmentLongitude * maxSeparation) && !particles[i].tooSeparated ) //si estan massa separats
-			{
-				//if (particles[i-1].isFixed){
-				//particles[i].position -= (particles[i].position - particles[i - 1].position).normalized * ((particles[i].position - particles[i - 1].position).magnitude - (segmentLongitude));
-				//}
-				//else
-				//{
-					
-
-					Vector3 correction1 = (particles[i].position - particles[i - 1].position).normalized * (((particles[i].position - particles[i - 1].position).magnitude - (segmentLongitude))/2);
-					particles[i].position -= correction1;
-					Vector3 correction2 = (particles[i].position - particles[i - 1].position).normalized * (((particles[i].position - particles[i - 1].position).magnitude - (segmentLongitude))/2);
-					particles[i - 1].position += correction2;
-					//print (correction1.x + "," + correction1.y + "," + correction1.z + " ||| " + correction2.x + ","+ correction2.y + "," +correction2.z);
-				//}
+					//}
+				}
 			}
 
+
+			if (i > 0){
+
+				Vector3 distVec = (particles[i].position - particles[i - 1].position);
+				distVec.z =  Mathf.Round (distVec.z * 100f)/100f;
+
+				if (distVec.magnitude > (segmentLongitude + segmentLongitude * maxSeparation) ) //si estan massa separats
+				{
+					//if (particles[i-1].isFixed){
+					//particles[i].position -= (particles[i].position - particles[i - 1].position).normalized * ((particles[i].position - particles[i - 1].position).magnitude - (segmentLongitude));
+					//}
+					//else
+					//{
+
+
+					Vector3 correction1 = distVec.normalized * ((distVec.magnitude - (segmentLongitude)) / 2);
+					particles[i].position -= correction1;
+					Vector3 correction2 = distVec.normalized * ((distVec.magnitude - (segmentLongitude)) / 2);
+					particles[i - 1].position += correction2;
+					//print (correction1.x + "," + correction1.y + "," + correction1.z + " ||| " + correction2.x + ","+ correction2.y + "," +correction2.z);
+					//}
+				}
+			}
         }
     }
 }

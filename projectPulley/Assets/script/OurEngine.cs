@@ -183,7 +183,6 @@ namespace ourEngine {
         private float mass;
 
 		public bool isFixed;
-		public bool tooSeparated;
                 
         public ourParticle (Vector3 pos, float m, bool isF)
         {
@@ -193,7 +192,7 @@ namespace ourEngine {
         }
         public void Update(float delta)
         {
-			if (!isFixed && !tooSeparated) { //si no es l'agarre apliquem el solver de euler
+			if (!isFixed) { //si no es l'agarre apliquem el solver de euler
                 
                 position += velocity*delta;
 				velocity += delta* (force / mass);
@@ -217,6 +216,7 @@ namespace ourEngine {
             
             if (dist < radius)
             {
+				
 				//UnityEngine.Debug.DrawLine(position, position + velocity * 5, UnityEngine.Color.blue);
                 //trobem el punt d'interseccio
                 Vector3 dir = velocity.normalized; //normalitzem velocitat per fer la recta que surt de PosActual i va en dir de la velocitat
@@ -236,11 +236,11 @@ namespace ourEngine {
                  
                 
                 //elasticitat			
-                velocity += -(1+0) * (n * Vector3.Dot(n, velocity));
+                velocity += -(1+0.1f) * (n * Vector3.Dot(n, velocity));
                 
                 //friccion
                 Vector3 vN = Vector3.Dot(n, velocity) * n;
-                velocity += -0.5f * (velocity - vN); //velocity = velocity -u*vT
+                velocity += -1f * (velocity - vN); //velocity = velocity -u*vT
 
                 //UnityEngine.Debug.DrawLine(position, position + velocity * 5, UnityEngine.Color.green);
 				//UnityEngine.Debug.DrawLine(pulleyPos, intersectionPoint, UnityEngine.Color.black);          
