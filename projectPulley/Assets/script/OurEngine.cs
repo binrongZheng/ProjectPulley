@@ -192,7 +192,7 @@ namespace ourEngine {
         }
         public void Update(float delta)
         {
-			if (!isFixed) { //si no es l'agarre apliquem el solver de euler
+			if (!isFixed && position.y > -3) { //si no es l'agarre apliquem el solver de euler
                 
                 position += velocity*delta;
 				velocity += delta* (force / mass);

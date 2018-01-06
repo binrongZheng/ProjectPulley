@@ -42,6 +42,7 @@ public class Manager : MonoBehaviour {
 	private float velocity;
 	private float maxY;
 	public Transform load;
+	public GameObject target;
 
 	// Use this for initialization
 	void Start () {
@@ -116,9 +117,10 @@ public class Manager : MonoBehaviour {
 	void Update () {
 
 		//Movem la caixa i les politges mobils aplicant la outputForce que hem calculat
-		if (load.position.y <= maxY){
-            load.position += new Vector3(0, velocity * Time.deltaTime / 10, 0);
-            velocity += (outputForce/boxMass)*Time.deltaTime/10;			
+		if (load.position.y <= maxY && target.transform.position.y > 0 && Input.GetKey(KeyCode.S)){
+			target.transform.position -= new Vector3(0, velocity * Time.deltaTime / 5, 0); 
+			load.position += new Vector3(0, velocity * Time.deltaTime / 5, 0);
+            velocity += (outputForce/boxMass)*Time.deltaTime/5;			
 		}
 
 	}

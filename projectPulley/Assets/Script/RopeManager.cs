@@ -42,7 +42,7 @@ public class RopeManager : MonoBehaviour {
         for (int i = 0; i < numParticles; i++) {
 			particles[i] = new ourParticle(rope.GetChild(i).position, 1, false);
         }
-
+		rope.GetChild(numParticles-1).gameObject.AddComponent<MoveTarget>();
 
     }
 
@@ -52,7 +52,7 @@ public class RopeManager : MonoBehaviour {
 		
        	CalculateSpringForces();
 		UpdateSimuation ();
-		DistanceCorrection();
+		//DistanceCorrection();
 		SetRealPositions ();
 
 		//int a = 8;
