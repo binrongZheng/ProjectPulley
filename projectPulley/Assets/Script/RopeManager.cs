@@ -34,9 +34,9 @@ public class RopeManager : MonoBehaviour {
         }*/
 		
 		//numParticles = (int)(RopeLength/segmentLongitude);
-		numParticles = 40;
+		numParticles = 20;
 		for (int i = 0; i < numParticles; i++){
-			GameObject newJoint = Instantiate(joint, new Vector3(rope.position.x, rope.position.y, rope.position.z+i*segmentLongitude), Quaternion.identity);
+			GameObject newJoint = Instantiate(joint, new Vector3(rope.position.x+i*segmentLongitude, rope.position.y, rope.position.z), Quaternion.identity);
 			newJoint.transform.parent = rope;
 		}
 
@@ -65,7 +65,8 @@ public class RopeManager : MonoBehaviour {
 		//int a = 8;
 		//int b = 11;
 		//print(particles[a].rightForce.x + "," + particles[a].rightForce.y + "," + particles[a].rightForce.z + " |||| " + particles[b].leftForce.x + "," + particles[b].leftForce.y + "," + particles[b].leftForce.z);
-
+		if (Input.GetKey(KeyCode.P))
+			UnityEditor.EditorApplication.isPaused = true;
     }
 
     void CalculateSpringForces()
@@ -120,7 +121,9 @@ public class RopeManager : MonoBehaviour {
             */
 
             //Detectar colisions
-            //particles[i].PulleyCollision(pulley.position, 1.005f, Time.deltaTime);
+			particles[i].PulleyCollision(pulley.position, 0.6f, Time.deltaTime);
+		
+				
 
             //Simulem moviment
             particles[i].Update(Time.deltaTime);
@@ -135,6 +138,9 @@ public class RopeManager : MonoBehaviour {
 			//print (i + " : " + particles[i].position);
 			if (!float.IsNaN(particles[i].position.x) && !float.IsNaN(particles[i].position.y) && !float.IsNaN(particles[i].position.y))
 				rope.GetChild(i).position = particles[i].position;
+			else{
+				print("SOME POSITION VALUES ARE NAN!!!");
+			}
 
             //Debug
 			if (i < numParticles - 1)
@@ -151,7 +157,7 @@ public class RopeManager : MonoBehaviour {
 			if (i < numParticles-1 && !particles[i].isFixed){
 
 				Vector3 distVec = (particles[i].position - particles[i + 1].position);
-				distVec.z =  Mathf.Round (distVec.z * 100f)/100f;
+				distVec.x =  Mathf.Round (distVec.x * 100f)/100f;
 
 				if (distVec.magnitude > (segmentLongitude + segmentLongitude * maxSeparation) ) //si estan massa separats
 				{
@@ -171,7 +177,7 @@ public class RopeManager : MonoBehaviour {
 			if (i > 0 && !particles[i].isFixed){
 
 				Vector3 distVec = (particles[i].position - particles[i - 1].position);
-				distVec.z =  Mathf.Round (distVec.z * 100f)/100f;
+				distVec.x =  Mathf.Round (distVec.x * 100f)/100f;
 
 				if (distVec.magnitude > (segmentLongitude + segmentLongitude * maxSeparation) ) //si estan massa separats
 				{
