@@ -17,7 +17,6 @@ public class RopeManager : MonoBehaviour {
 
     public Transform pulley;
     
-	public int RopeLength;
 	private int numParticles;
 
 	public Transform ropeStart;
@@ -68,6 +67,21 @@ public class RopeManager : MonoBehaviour {
 		if (Input.GetKey(KeyCode.P))
 			UnityEditor.EditorApplication.isPaused = true;
     }
+
+	void OnPostRender() {
+		for (int i = 0; i < numParticles-1; i++)
+		{
+
+			Vector3 pos = particles[i].position;
+			Vector3 nextPos = particles[i+1].position;
+
+			GL.Begin(GL.LINES);
+			GL.Color(new Color(0f, 0f, 0f, 1f));
+			GL.Vertex3(pos.x, pos.y, pos.z);
+			GL.Vertex3(nextPos.x, nextPos.y, nextPos.z);
+			GL.End();
+		}
+	}
 
     void CalculateSpringForces()
     {
@@ -121,7 +135,7 @@ public class RopeManager : MonoBehaviour {
             */
 
             //Detectar colisions
-			particles[i].PulleyCollision(pulley.position, 0.6f, Time.deltaTime);
+			particles[i].PulleyCollision(pulley.position, 0.55f, Time.deltaTime);
 		
 				
 
