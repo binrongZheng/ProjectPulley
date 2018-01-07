@@ -16,7 +16,7 @@ public class Manager : MonoBehaviour {
 	public float alpha;
 	public float ropeDiametre;
 
-	[Range (0.0f,3.0f)]
+	[Range (0.0f,1.5f)]
 	public float inputDistance;
 
 	//private
@@ -36,7 +36,8 @@ public class Manager : MonoBehaviour {
 	float[] pulleyForce; 
 	int numPulley;
 	float gravity=9.81f;
-	float diferentDistanece;
+	float ropeLength = 10;
+	float ropeLimit;
 
 	//Per moure la caixa
 	private float velocity;
@@ -51,19 +52,20 @@ public class Manager : MonoBehaviour {
 			MA = 1;
 			numPulley = 0;
 			numTension = 2;
-			longituds = new float[]{ 3, 3 };
+			longituds = new float[]{ 2.5f, 2.5f };
+			pulleyForce = new float[1];
 			break;
 		case SystemType.movablePulley:
 			MA = 2;
 			numPulley = 1;
 			numTension = 2;
-			longituds = new float[]{ 3, 3 };
+			longituds = new float[]{ 2.5f, 2.5f };
 			break;
 		case SystemType.twoPulleySystem:
 			MA = 2;
 			numPulley = 1;
 			numTension = 3;
-			longituds = new float[]{ 3, 1.5f,1.5f };
+			longituds = new float[]{ 2.5f, 1.25f,1.25f };
 
 			break;
 		default:
@@ -101,11 +103,12 @@ public class Manager : MonoBehaviour {
 
 		//CALCULEM LONGITUDS
 		if (systemType == SystemType.fixedPulley){
-			longituds [0] -= inputDistance;
-			longituds [1] += inputDistance;
+			//longituds [0] -= inputDistance;
+			//longituds [1] += inputDistance;
 
 			//oF = T2 + (l1-l2)*P_rope/m
-			outputForce = tension [numTension - 1] + ( (longituds [0]-longituds[1]) * P_Rope_Metre);
+			outputForce = tension [numTension - 1] + ( (load.position.y-target.transform.position.y) * P_Rope_Metre);
+			pulleyForce[0] = ((( (ropeLength/2 * P_Rope_Metre) + drumFriction) * overHaulingFactor)+tension[0])*2; //2 pq alpha es 0 i per tant el factor es aixi
 		}
 
 		//calculem la posicio final de la caixa
@@ -117,12 +120,47 @@ public class Manager : MonoBehaviour {
 	void Update () {
 
 		//Movem la caixa i les politges mobils aplicant la outputForce que hem calculat
-		if (load.position.y <= maxY && target.transform.position.y > 0 && Input.GetKey(KeyCode.S)){
+		if (load.position.y <= maxY /*&& target.transform.position.y > 0*/ && Input.GetKey(KeyCode.S)){
 			target.transform.position -= new Vector3(0, velocity * Time.deltaTime / 5, 0); 
 			load.position += new Vector3(0, velocity * Time.deltaTime / 5, 0)/MA;
-            velocity += (outputForce/boxMass)*Time.deltaTime/5;			
+            velocity += (outputForce/boxMass)*Time.deltaTime/5;		
+
+			//Es va modificant una mica pq el pes de la corda t'ajuda
+			outputForce = tension [numTension - 1] + ( (load.position.y-target.transform.position.y) * P_Rope_Metre);
 		}
 
+	}
+
+	void OnGUI () {
+
+		//DADES DE RESULTATS
+		GUI.contentColor = Color.yellow;
+		GUI.Box(new Rect(5, 10, 600, 100), "");
+
+		GUI.Label(new Rect(10, 10, 800, 20), "Força minima per aixecar la càrrega : " + outputForce);
+		GUI.Label(new Rect(10, 30, 800, 20), "LIMITS");
+		GUI.Label(new Rect(10, 45, 800, 20), "Força que està suportant la politja : " + pulleyForce[0] + ", el limit d'aquest tipus de politja és " + pulleyLimit + "kN");
+		for (int i = 0; i < numTension; i++){
+			if (tension[i] > ropeLimit*1000)
+				GUI.Label(new Rect(10, 60 + 15*i, 800, 20),"La tensio " + i + " es massa alta, la corda es trenca!!");
+			else
+				GUI.Label(new Rect(10, 60 + 15*i, 800, 20), "La tensio " + i + " es de " + tension[i] + ", el limit d'una corda d'aquestes característiques es de " + ropeLimit + "kN");			
+		}
+
+		//Distancia estirada
+		float pulledDist = Mathf.Round((2.17f - target.transform.position.y)*100f)/100f;
+		GUI.Label(new Rect(10, 200, 300, 20), "Has estirat " + pulledDist + " de " + inputDistance + "m");
+
+		//INFORMACIO GENERAL
+		GUI.Box(new Rect(5, Screen.height-10, 300, -170), "");
+		GUI.Label(new Rect(10, Screen.height-180, 300, 20), "DADES GENERALS");
+		GUI.Label(new Rect(10, Screen.height-160, 300, 20), "Aquest sistema es : " + systemType);
+		GUI.Label(new Rect(10, Screen.height-140, 300, 20), "- La massa que volem aixecar es de " + boxMass + "kg");
+		GUI.Label(new Rect(10, Screen.height-120, 300, 20), "- El diametre de la corda es de " + ropeDiametre + " polzades");
+		GUI.Label(new Rect(10, Screen.height-100, 300, 20), "- La corda pesa " + P_Rope_Metre + "N/m");
+		GUI.Label(new Rect(10, Screen.height-80, 300, 20), "- El limit de pes d'aquesta corda es de " + ropeLimit +"kN");			
+		GUI.Label(new Rect(10, Screen.height-60, 300, 20), "- La politja es de tipus " + pulleyType + " i pesa " + pulleyMass +"kg");			
+		GUI.Label(new Rect(10, Screen.height-40, 300, 20), "- El limit de pes d'aquesta politja es de " + pulleyLimit +"kN");
 	}
 
 	void setPulleyValue(){
@@ -130,16 +168,19 @@ public class Manager : MonoBehaviour {
 		case SheaveDiametre.eight:
 			if (pulleyType == PulleyType.withHook) {
 				pulleyMass = 34;
-				pulleyLimit = 196133;//Newton
+				pulleyLimit = 196.1f;//kN
 				ropeDiametre = 1;
+				ropeLimit = 447.38f;//kN
 			} else if (pulleyType == PulleyType.withShackle) {
 				pulleyMass = 39.44f;
 				pulleyLimit= 196133;
 				ropeDiametre = 1;
+				ropeLimit = 447.38f;//kN
 			} else if (pulleyType == PulleyType.tailBoard) {
 				pulleyMass = 19.04f;
 				pulleyLimit= 196133;
 				ropeDiametre = 1;
+				ropeLimit = 447.38f;//kN			
 			}
 			break;
 		}
