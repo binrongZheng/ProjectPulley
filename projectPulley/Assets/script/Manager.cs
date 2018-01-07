@@ -111,6 +111,16 @@ public class Manager : MonoBehaviour {
 			pulleyForce[0] = ((( (ropeLength/2 * P_Rope_Metre) + drumFriction) * overHaulingFactor)+tension[0])*2; //2 pq alpha es 0 i per tant el factor es aixi
 		}
 
+		//CALCULEM LONGITUDS
+		if (systemType == SystemType.movablePulley){
+			//longituds [0] -= inputDistance;
+			//longituds [1] += inputDistance;
+
+			//oF = T2 + (l1-l2)*P_rope/m
+			outputForce = tension [numTension-1] + ( (load.position.y-target.transform.position.y) * P_Rope_Metre);
+			pulleyForce[0] = ((( (ropeLength/2 * P_Rope_Metre) + drumFriction) * overHaulingFactor)+tension[0])*2; //2 pq alpha es 0 i per tant el factor es aixi
+		}
+
 		//calculem la posicio final de la caixa
 		maxY = load.position.y + inputDistance;
 
@@ -118,15 +128,28 @@ public class Manager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-
+		print(tension[1]);
+		if (systemType == SystemType.fixedPulley){
 		//Movem la caixa i les politges mobils aplicant la outputForce que hem calculat
-		if (load.position.y <= maxY /*&& target.transform.position.y > 0*/ && Input.GetKey(KeyCode.S)){
-			target.transform.position -= new Vector3(0, velocity * Time.deltaTime / 5, 0); 
-			load.position += new Vector3(0, velocity * Time.deltaTime / 5, 0)/MA;
-            velocity += (outputForce/boxMass)*Time.deltaTime/5;		
+			if (load.position.y <= maxY /*&& target.transform.position.y > 0*/ && Input.GetKey(KeyCode.S)){
+				target.transform.position -= new Vector3(0, velocity * Time.deltaTime / 5, 0); 
+				load.position += new Vector3(0, velocity * Time.deltaTime / 5, 0)/MA;
+	            velocity += (outputForce/boxMass)*Time.deltaTime/5;		
 
-			//Es va modificant una mica pq el pes de la corda t'ajuda
-			outputForce = tension [numTension - 1] + ( (load.position.y-target.transform.position.y) * P_Rope_Metre);
+				//Es va modificant una mica pq el pes de la corda t'ajuda
+				outputForce = tension [numTension - 1] + ( (load.position.y-target.transform.position.y) * P_Rope_Metre);
+			}
+		}
+		if (systemType == SystemType.movablePulley){
+			//Movem la caixa i les politges mobils aplicant la outputForce que hem calculat
+			if (load.position.y <= maxY /*&& target.transform.position.y > 0*/ && Input.GetKey(KeyCode.W)){
+				target.transform.position += new Vector3(0, velocity * Time.deltaTime / 5, 0); 
+				load.position += new Vector3(0, velocity * Time.deltaTime / 5, 0)/MA;
+				velocity += (outputForce/boxMass)*Time.deltaTime/5;		
+
+				//Es va modificant una mica pq el pes de la corda t'ajuda
+				outputForce = tension [numTension - 1] + ( (load.position.y-target.transform.position.y) * P_Rope_Metre);
+			}
 		}
 
 	}
