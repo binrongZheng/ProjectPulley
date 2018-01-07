@@ -20,6 +20,9 @@ public class RopeManager : MonoBehaviour {
 	public int RopeLength;
 	private int numParticles;
 
+	public Transform ropeStart;
+	public Transform ropeEnd;
+
     // Use this for initialization
     void Start()
     {
@@ -39,20 +42,24 @@ public class RopeManager : MonoBehaviour {
 
         //iniciem les nostra simulacio a la posicio de la corda real
 		particles = new ourParticle[rope.childCount];        
-        for (int i = 0; i < numParticles; i++) {
+        for (int i = 1; i < numParticles-1; i++) {
 			particles[i] = new ourParticle(rope.GetChild(i).position, 1, false);
         }
-		rope.GetChild(numParticles-1).gameObject.AddComponent<MoveTarget>();
+		particles[0] = new ourParticle(ropeStart.position, 1, true);
+		particles[numParticles-1] = new ourParticle(ropeEnd.position, 1, true);
 
     }
 
     // Update is called once per frame
     void Update()
     {
+		//print (particles[0].position + " vs " + ropeStart.position);
+		particles[0].position = ropeStart.position;
+		particles[numParticles-1].position = ropeEnd.position;
 		
        	CalculateSpringForces();
 		UpdateSimuation ();
-		//DistanceCorrection();
+		DistanceCorrection();
 		SetRealPositions ();
 
 		//int a = 8;
@@ -113,7 +120,7 @@ public class RopeManager : MonoBehaviour {
             */
 
             //Detectar colisions
-            particles[i].PulleyCollision(pulley.position, 1.005f, Time.deltaTime);
+            //particles[i].PulleyCollision(pulley.position, 1.005f, Time.deltaTime);
 
             //Simulem moviment
             particles[i].Update(Time.deltaTime);
@@ -125,7 +132,9 @@ public class RopeManager : MonoBehaviour {
 		for (int i = 0; i < numParticles; i++)
         {
             //setejem els objectes
-			rope.GetChild(i).position = particles[i].position;
+			//print (i + " : " + particles[i].position);
+			if (!float.IsNaN(particles[i].position.x) && !float.IsNaN(particles[i].position.y) && !float.IsNaN(particles[i].position.y))
+				rope.GetChild(i).position = particles[i].position;
 
             //Debug
 			if (i < numParticles - 1)
@@ -139,46 +148,44 @@ public class RopeManager : MonoBehaviour {
 		for (int i = 0; i < numParticles; i++)
         {			
 			
-			if (i < numParticles-1){
+			if (i < numParticles-1 && !particles[i].isFixed){
 
 				Vector3 distVec = (particles[i].position - particles[i + 1].position);
 				distVec.z =  Mathf.Round (distVec.z * 100f)/100f;
 
 				if (distVec.magnitude > (segmentLongitude + segmentLongitude * maxSeparation) ) //si estan massa separats
 				{
-					//if (particles[i+1].isFixed)
-					//particles[i].position -= (particles[i].position - particles[i + 1].position).normalized * ((particles[i].position - particles[i + 1].position).magnitude - (segmentLongitude));
-					//else
-					//{
-					Vector3 correction1 = distVec.normalized * ((distVec.magnitude - (segmentLongitude)) / 2);
-					particles[i].position -= correction1;
-					Vector3 correction2 = distVec.normalized * ((distVec.magnitude - (segmentLongitude)) / 2);
-					particles[i + 1].position += correction2;
-					//}
+					if (particles[i+1].isFixed)
+						particles[i].position -= (particles[i].position - particles[i + 1].position).normalized * ((particles[i].position - particles[i + 1].position).magnitude - (segmentLongitude));
+					else
+					{
+						Vector3 correction1 = distVec.normalized * ((distVec.magnitude - (segmentLongitude)) / 2);
+						particles[i].position -= correction1;
+						Vector3 correction2 = distVec.normalized * ((distVec.magnitude - (segmentLongitude)) / 2);
+						particles[i + 1].position += correction2;
+					}
 				}
 			}
 
 
-			if (i > 0){
+			if (i > 0 && !particles[i].isFixed){
 
 				Vector3 distVec = (particles[i].position - particles[i - 1].position);
 				distVec.z =  Mathf.Round (distVec.z * 100f)/100f;
 
 				if (distVec.magnitude > (segmentLongitude + segmentLongitude * maxSeparation) ) //si estan massa separats
 				{
-					//if (particles[i-1].isFixed){
-					//particles[i].position -= (particles[i].position - particles[i - 1].position).normalized * ((particles[i].position - particles[i - 1].position).magnitude - (segmentLongitude));
-					//}
-					//else
-					//{
-
-
-					Vector3 correction1 = distVec.normalized * ((distVec.magnitude - (segmentLongitude)) / 2);
-					particles[i].position -= correction1;
-					Vector3 correction2 = distVec.normalized * ((distVec.magnitude - (segmentLongitude)) / 2);
-					particles[i - 1].position += correction2;
-					//print (correction1.x + "," + correction1.y + "," + correction1.z + " ||| " + correction2.x + ","+ correction2.y + "," +correction2.z);
-					//}
+					if (particles[i-1].isFixed){
+						particles[i].position -= (particles[i].position - particles[i - 1].position).normalized * ((particles[i].position - particles[i - 1].position).magnitude - (segmentLongitude));
+					}
+					else
+					{
+						Vector3 correction1 = distVec.normalized * ((distVec.magnitude - (segmentLongitude)) / 2);
+						particles[i].position -= correction1;
+						Vector3 correction2 = distVec.normalized * ((distVec.magnitude - (segmentLongitude)) / 2);
+						particles[i - 1].position += correction2;
+						//print (correction1.x + "," + correction1.y + "," + correction1.z + " ||| " + correction2.x + ","+ correction2.y + "," +correction2.z);
+					}
 				}
 			}
         }
