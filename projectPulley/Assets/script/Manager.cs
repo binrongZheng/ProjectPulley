@@ -34,7 +34,7 @@ public class Manager : MonoBehaviour {
 	float outputForce;
 	float MA;
 	float[] pulleyForce; 
-	int numPulley;
+	int numPulley; //Aquestes nomes son les mobils
 	float gravity=9.81f;
 	float ropeLength = 10;
 	float ropeLimit;
@@ -77,7 +77,7 @@ public class Manager : MonoBehaviour {
 		setPulleyValue();
 
 		p_load = boxMass * gravity; 
-
+		//Sumem la massa de les politges mobils
 		for(int i=0;i<numPulley;i++){
 			p_load += pulleyMass*gravity;
 		}
@@ -107,7 +107,7 @@ public class Manager : MonoBehaviour {
 			//longituds [1] += inputDistance;
 
 			//oF = T2 + (l1-l2)*P_rope/m
-			outputForce = tension [numTension - 1] + ( (load.position.y-target.position.y) * P_Rope_Metre);
+			outputForce = tension [numTension - 1] + ( (target.position.y-load.position.y) * P_Rope_Metre);
 			pulleyForce[0] = ((( (ropeLength/2 * P_Rope_Metre) + drumFriction) * overHaulingFactor)+tension[0])*2; //2 pq alpha es 0 i per tant el factor es aixi
 		}
 
@@ -117,7 +117,7 @@ public class Manager : MonoBehaviour {
 			//longituds [1] += inputDistance;
 
 			//oF = T2 + (l1-l2)*P_rope/m
-			outputForce = tension [numTension-1] + ( (load.position.y-target.position.y) * P_Rope_Metre);
+			outputForce = tension [numTension-1] + ( (target.position.y-load.position.y) * P_Rope_Metre);
 			//pulleyForce[0] = ((( (ropeLength/2 * P_Rope_Metre) + drumFriction) * overHaulingFactor)+tension[0])*2; //2 pq alpha es 0 i per tant el factor es aixi
 		}
 
@@ -139,7 +139,7 @@ public class Manager : MonoBehaviour {
 	            velocity += (outputForce/boxMass)*Time.deltaTime/5;		
 
 				//Es va modificant una mica pq el pes de la corda t'ajuda
-				outputForce = tension [numTension - 1] + ( (load.position.y-target.position.y) * P_Rope_Metre);
+				outputForce = tension [numTension - 1] + ( (target.position.y-load.position.y) * P_Rope_Metre);
 			}
 		}
 		if (systemType == SystemType.movablePulley){
@@ -151,7 +151,7 @@ public class Manager : MonoBehaviour {
 				velocity += (outputForce/boxMass)*Time.deltaTime/5;		
 
 				//Es va modificant una mica pq el pes de la corda t'ajuda
-				outputForce = tension [numTension - 1] + ( (load.position.y-target.position.y) * P_Rope_Metre);
+				outputForce = tension [numTension - 1] + ( (target.position.y-load.position.y) * P_Rope_Metre);
 			}
 		}
 
