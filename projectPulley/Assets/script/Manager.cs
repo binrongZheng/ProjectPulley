@@ -6,7 +6,7 @@ public class Manager : MonoBehaviour {
 	//public
 	public enum SystemType{fixedPulley,movablePulley,twoPulleySystem}; 
 	public enum PulleyType{withHook,withShackle,tailBoard}; 
-	public enum SheaveDiametre{eight=8,ten=10,twelve=12,fourteen=14,eighteen=18,twenty=20,twenty_four=24}; 
+	public enum SheaveDiametre{eight=8,ten=10,twelve=12,fourteen=14,eighteen=18}; 
 
 	public SystemType systemType;
 	static public PulleyType pulleyType;
@@ -26,7 +26,7 @@ public class Manager : MonoBehaviour {
 	float p_load;
 	float drumFriction=222.4f;
 	float beta;
-	float P_Rope_Metre=27;			//27N/m
+	float P_Rope_Metre;	
 	float overHaulingFactor;
 	float[] longituds;
 	float[] tension=new float[3];
@@ -195,22 +195,65 @@ public class Manager : MonoBehaviour {
 		switch (sheaveDiametre) {
 		case SheaveDiametre.eight:
 			if (pulleyType == PulleyType.withHook) {
-				pulleyMass = 34;
-				pulleyLimit = 196.1f;//kN
-				ropeDiametre = 1;
-				ropeLimit = 447.38f;//kN
-			} else if (pulleyType == PulleyType.withShackle) {
-				pulleyMass = 39.44f;
-				pulleyLimit= 196133;
-				ropeDiametre = 1;
-				ropeLimit = 447.38f;//kN
-			} else if (pulleyType == PulleyType.tailBoard) {
-				pulleyMass = 19.04f;
-				pulleyLimit= 196133;
-				ropeDiametre = 1;
-				ropeLimit = 447.38f;//kN			
+				pulleyMass = 34;								
+			} else if (pulleyType == PulleyType.withShackle) {				
+				pulleyMass = 39.44f;							
+			} else if (pulleyType == PulleyType.tailBoard) {				
+				pulleyMass = 19.05f;									
 			}
+			pulleyLimit = 196.1f;//kN	
+			break;		
+		case SheaveDiametre.ten:
+			if (pulleyType == PulleyType.withHook) {				
+				pulleyMass = 40.37f;								
+			} else if (pulleyType == PulleyType.withShackle) {				
+				pulleyMass = 45.81f;						
+			} else if (pulleyType == PulleyType.tailBoard) {				
+				pulleyMass = 24.95f;								
+			}
+			pulleyLimit = 196.1f;//kN	
+		break;
+		case SheaveDiametre.twelve:
+			if (pulleyType == PulleyType.withHook) {				
+				pulleyMass = 46.72f;								
+			} else if (pulleyType == PulleyType.withShackle) {				
+				pulleyMass = 52.16f;						
+			} else if (pulleyType == PulleyType.tailBoard) {				
+				pulleyMass = 31.75f;								
+			}
+			pulleyLimit = 196.1f;//kN	
+			break;
+		case SheaveDiametre.fourteen:
+			if (pulleyType == PulleyType.withHook) {				
+				pulleyMass = 55.79f;								
+			} else if (pulleyType == PulleyType.withShackle) {				
+				pulleyMass = 61.24f;						
+			} else if (pulleyType == PulleyType.tailBoard) {				
+				pulleyMass = 40.82f;								
+			}
+			pulleyLimit = 196.1f;//kN	
+			break;
+		case SheaveDiametre.eighteen:
+			if (pulleyType == PulleyType.withHook) {				
+				pulleyMass = 108.86f;								
+			} else if (pulleyType == PulleyType.withShackle) {				
+				pulleyMass = 117.93f;						
+			} else if (pulleyType == PulleyType.tailBoard) {				
+				pulleyMass = 74.84f;								
+			}
+			pulleyLimit = 245.2f;//kN
 			break;
 		}
+
+		//Aixo nomes depen de la corda
+		if (ropeDiametre == 1){
+			ropeLimit = 440.32f;//kN
+			P_Rope_Metre = 2.5f; //N/m
+		}
+		if (ropeDiametre == 1/8){
+			ropeLimit = 554.08f;//kN -- AQUEST CANVIA
+			P_Rope_Metre = 3.17f; //N/m --AQUEST CANVIA
+		}
+
 	}
 }

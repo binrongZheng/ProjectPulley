@@ -9,6 +9,7 @@ public class ControlScene : MonoBehaviour {
 	public Dropdown system_Type; 
 	public Dropdown pulley_Type; 
 	public Dropdown shave_diametre;
+	public Dropdown rope_Diametre;
 	public Slider input_dist_Slide;
 	public Text input_dist_Text;
 	public Image input_dist_Image;
@@ -16,7 +17,6 @@ public class ControlScene : MonoBehaviour {
 	public InputField box_Mass;
 	public InputField static_Coef;
 	public InputField alpha_Angle;
-	public InputField rope_Diametre;
 
 
 
@@ -32,7 +32,7 @@ public class ControlScene : MonoBehaviour {
 	}
 	void TaskOnClick()
 	{
-		if(box_Mass.text!=""&&static_Coef.text!=""&&alpha_Angle.text!=""&rope_Diametre.text!=""){
+		if(box_Mass.text!=""&&static_Coef.text!=""&&alpha_Angle.text!=""){
 			if(Manager.inputDistance!=0){
 				if(system_Type.value==0)
 					Application.LoadLevel("finalScene");
@@ -69,16 +69,18 @@ public class ControlScene : MonoBehaviour {
 		case 4:
 			Manager.sheaveDiametre=Manager.SheaveDiametre.eighteen;
 			break;
-		case 5:
-			Manager.sheaveDiametre=Manager.SheaveDiametre.twenty;
+		}
+		switch(rope_Diametre.value){
+		case 0:
+			Manager.ropeDiametre=1;
 			break;
-		case 6:
-			Manager.sheaveDiametre=Manager.SheaveDiametre.twenty_four;
-			break;
+		case 1:
+			Manager.ropeDiametre=1/8;
+			break;		
 		}
 
 		input_dist_Text.text = input_dist_Slide.value.ToString("F1")+" m";
-		//print(System.Math.Round(input_dist_Slide.value,1));
+
 		Manager.inputDistance = (float)System.Math.Round(input_dist_Slide.value,2);
 		if(input_dist_Slide.value==0)	input_dist_Image.color=Color.red;
 		else {
@@ -94,9 +96,6 @@ public class ControlScene : MonoBehaviour {
 		}
 		if(alpha_Angle.text!=""){
 			Manager.alpha = float.Parse(alpha_Angle.text);
-		}
-		if(rope_Diametre.text!=""){
-			Manager.ropeDiametre = float.Parse( rope_Diametre.text);
 		}
 
 	}
