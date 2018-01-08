@@ -10,13 +10,16 @@ public class ControlScene : MonoBehaviour {
 	public Dropdown pulley_Type; 
 	public Dropdown shave_diametre;
 	public Dropdown rope_Diametre;
+	public Dropdown static_Coef;
 	public Slider input_dist_Slide;
 	public Text input_dist_Text;
+	public Slider alpha_Angle_Slide;
+	public Text alpha_Angle_Text;
 	public Image input_dist_Image;
 	public Button button;
 	public InputField box_Mass;
-	public InputField static_Coef;
-	public InputField alpha_Angle;
+	//public InputField static_Coef;
+	//public InputField alpha_Angle;
 
 
 
@@ -32,7 +35,7 @@ public class ControlScene : MonoBehaviour {
 	}
 	void TaskOnClick()
 	{
-		if(box_Mass.text!=""&&static_Coef.text!=""&&alpha_Angle.text!=""){
+		if(box_Mass.text!=""/*&&static_Coef.text!=""&&alpha_Angle.text!=""*/){
 			if(Manager.inputDistance!=0){
 				if(system_Type.value==0)
 					Application.LoadLevel("finalScene");
@@ -78,25 +81,38 @@ public class ControlScene : MonoBehaviour {
 			Manager.ropeDiametre=1/8;
 			break;		
 		}
+		switch(static_Coef.value){
+		case 0:
+			Manager.staticCoef = 0.16f;
+			break;
+		case 1:
+			Manager.staticCoef = 0.3f;
+			break;
+		case 2:
+			Manager.staticCoef = 0.2f;
+			break;	
+		}
 
 		input_dist_Text.text = input_dist_Slide.value.ToString("F1")+" m";
-
 		Manager.inputDistance = (float)System.Math.Round(input_dist_Slide.value,2);
 		if(input_dist_Slide.value==0)	input_dist_Image.color=Color.red;
 		else {
 			input_dist_Image.color=Color.green;
 		}
 
+		alpha_Angle_Text.text = alpha_Angle_Slide.value.ToString("F1")+" º";
+		Manager.alpha = (float)System.Math.Round(alpha_Angle_Slide.value,2);
+
 
 		if(box_Mass.text!=""){
 			Manager.boxMass = float.Parse( box_Mass.text);
 		}
-		if(static_Coef.text!=""){
+		/*if(static_Coef.text!=""){
 			Manager.staticCoef = float.Parse( static_Coef.text);
-		}
-		if(alpha_Angle.text!=""){
+		}*/
+		/*if(alpha_Angle.text!=""){
 			Manager.alpha = float.Parse(alpha_Angle.text);
-		}
+		}*/
 
 	}
 }

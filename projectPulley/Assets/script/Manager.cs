@@ -28,7 +28,7 @@ public class Manager : MonoBehaviour {
 	float beta;
 	float P_Rope_Metre;	
 	float overHaulingFactor;
-	float[] longituds;
+	//float[] longituds;
 	float[] tension=new float[3];
 	int numTension;
 	float outputForce;
@@ -52,20 +52,20 @@ public class Manager : MonoBehaviour {
 			MA = 1;
 			numPulley = 0;
 			numTension = 2;
-			longituds = new float[]{ 2.5f, 2.5f };
+			//longituds = new float[]{ 2.5f, 2.5f };
 			pulleyForce = new float[1];
 			break;
 		case SystemType.movablePulley:
 			MA = 2;
 			numPulley = 1;
 			numTension = 2;
-			longituds = new float[]{ 2.5f, 2.5f };
+			//longituds = new float[]{ 2.5f, 2.5f };
 			break;
 		case SystemType.twoPulleySystem:
 			MA = 2;
 			numPulley = 1;
 			numTension = 3;
-			longituds = new float[]{ 2.5f, 1.25f,1.25f };
+			//longituds = new float[]{ 2.5f, 1.25f,1.25f };
 
 			break;
 		default:
@@ -91,14 +91,8 @@ public class Manager : MonoBehaviour {
 		tension[0]=p_load/MA;
 		//setegem la resta
 		for(int i=1;i<numTension;i++){
-			//if (i == numTension - 1) {
-				tension [i] = tension [i - 1] * Mathf.Pow (eulerNum,staticCoef*beta*Mathf.Deg2Rad);
-				//longituds [i] += inputDistance;
-
-			/*} else {
-				tension [i] = tension [i - 1] * Mathf.Pow (eulerNum,staticCoef*180*Mathf.Deg2Rad);
-				longituds [i] -= inputDistance / MA;
-			}*/
+			
+			tension [i] = tension [i - 1] * Mathf.Pow (eulerNum,staticCoef*beta*Mathf.Deg2Rad);
 		}
 
 		//CALCULEM LONGITUDS
@@ -123,7 +117,7 @@ public class Manager : MonoBehaviour {
 
 		//calculem la posicio final de la caixa
 		maxY = load.position.y + inputDistance;
-
+		print(alpha);
 	}
 	
 	// Update is called once per frame
@@ -161,7 +155,7 @@ public class Manager : MonoBehaviour {
 
 		//DADES DE RESULTATS
 		GUI.contentColor = Color.yellow;
-		GUI.Box(new Rect(5, 10, 600, 100), "");
+		GUI.Box(new Rect(5, 10, 550, 100), "");
 
 		GUI.Label(new Rect(10, 10, 800, 20), "Força minima per aixecar la càrrega : " + outputForce);
 		GUI.Label(new Rect(10, 30, 800, 20), "LIMITS");
@@ -181,14 +175,14 @@ public class Manager : MonoBehaviour {
 
 		//INFORMACIO GENERAL
 		GUI.Box(new Rect(5, Screen.height-10, 300, -170), "");
-		GUI.Label(new Rect(10, Screen.height-180, 300, 20), "DADES GENERALS");
-		GUI.Label(new Rect(10, Screen.height-160, 300, 20), "Aquest sistema es : " + systemType);
-		GUI.Label(new Rect(10, Screen.height-140, 300, 20), "- La massa que volem aixecar es de " + boxMass + "kg");
-		GUI.Label(new Rect(10, Screen.height-120, 300, 20), "- El diametre de la corda es de " + ropeDiametre + " polzades");
-		GUI.Label(new Rect(10, Screen.height-100, 300, 20), "- La corda pesa " + P_Rope_Metre + "N/m");
-		GUI.Label(new Rect(10, Screen.height-80, 300, 20), "- El limit de pes d'aquesta corda es de " + ropeLimit +"kN");			
-		GUI.Label(new Rect(10, Screen.height-60, 300, 20), "- La politja es de tipus " + pulleyType + " i pesa " + pulleyMass +"kg");			
-		GUI.Label(new Rect(10, Screen.height-40, 300, 20), "- El limit de pes d'aquesta politja es de " + pulleyLimit +"kN");
+		GUI.Label(new Rect(10, Screen.height-160, 300, 20), "DADES GENERALS");
+		GUI.Label(new Rect(10, Screen.height-140, 300, 20), "Aquest sistema es : " + systemType);
+		GUI.Label(new Rect(10, Screen.height-120, 300, 20), "- La massa que volem aixecar es de " + boxMass + "kg");
+		GUI.Label(new Rect(10, Screen.height-100, 300, 20), "- El diametre de la corda es de " + ropeDiametre + " polzades");
+		GUI.Label(new Rect(10, Screen.height-80, 300, 20), "- La corda pesa " + P_Rope_Metre + "N/m");					
+		GUI.Label(new Rect(10, Screen.height-60, 300, 20), "- La politja es de tipus " + pulleyType + " i pesa " + pulleyMass +"kg");
+		GUI.Label(new Rect(10, Screen.height-40, 300, 20), "- El diametre de la politja es de '" + sheaveDiametre + "' polzades");
+
 	}
 
 	void setPulleyValue(){
