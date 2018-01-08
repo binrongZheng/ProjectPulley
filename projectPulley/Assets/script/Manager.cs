@@ -9,15 +9,15 @@ public class Manager : MonoBehaviour {
 	public enum SheaveDiametre{eight=8,ten=10,twelve=12,fourteen=14,eighteen=18,twenty=20,twenty_four=24}; 
 
 	public SystemType systemType;
-	public PulleyType pulleyType;
-	public SheaveDiametre sheaveDiametre;
-	public float boxMass;
-	public float staticCoef;
-	public float alpha;
-	public float ropeDiametre;
+	static public PulleyType pulleyType;
+	static public SheaveDiametre sheaveDiametre;
+	static public float boxMass;
+	static public float staticCoef;
+	static public float alpha;
+	static public float ropeDiametre;
 
 	[Range (0.0f,1.5f)]
-	public float inputDistance;
+	static public float inputDistance;
 
 	//private
 	float pulleyMass;
@@ -111,6 +111,16 @@ public class Manager : MonoBehaviour {
 			pulleyForce[0] = ((( (ropeLength/2 * P_Rope_Metre) + drumFriction) * overHaulingFactor)+tension[0])*2; //2 pq alpha es 0 i per tant el factor es aixi
 		}
 
+		//CALCULEM LONGITUDS
+		if (systemType == SystemType.movablePulley){
+			//longituds [0] -= inputDistance;
+			//longituds [1] += inputDistance;
+
+			//oF = T2 + (l1-l2)*P_rope/m
+			outputForce = tension [numTension-1] + ( (load.position.y-target.transform.position.y) * P_Rope_Metre);
+			//pulleyForce[0] = ((( (ropeLength/2 * P_Rope_Metre) + drumFriction) * overHaulingFactor)+tension[0])*2; //2 pq alpha es 0 i per tant el factor es aixi
+		}
+
 		//calculem la posicio final de la caixa
 		maxY = load.position.y + inputDistance;
 
@@ -118,15 +128,31 @@ public class Manager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-
+		if(Input.GetKeyDown(KeyCode.Escape))
+			Application.LoadLevel("optionScene");
+		
+		if (systemType == SystemType.fixedPulley){
 		//Movem la caixa i les politges mobils aplicant la outputForce que hem calculat
-		if (load.position.y <= maxY /*&& target.transform.position.y > 0*/ && Input.GetKey(KeyCode.S)){
-			target.transform.position -= new Vector3(0, velocity * Time.deltaTime / 5, 0); 
-			load.position += new Vector3(0, velocity * Time.deltaTime / 5, 0)/MA;
-            velocity += (outputForce/boxMass)*Time.deltaTime/5;		
+			if (load.position.y <= maxY /*&& target.transform.position.y > 0*/ && Input.GetKey(KeyCode.S)){
+				target.transform.position -= new Vector3(0, velocity * Time.deltaTime / 5, 0); 
+				load.position += new Vector3(0, velocity * Time.deltaTime / 5, 0)/MA;
+	            velocity += (outputForce/boxMass)*Time.deltaTime/5;		
 
-			//Es va modificant una mica pq el pes de la corda t'ajuda
-			outputForce = tension [numTension - 1] + ( (load.position.y-target.transform.position.y) * P_Rope_Metre);
+				//Es va modificant una mica pq el pes de la corda t'ajuda
+				outputForce = tension [numTension - 1] + ( (load.position.y-target.transform.position.y) * P_Rope_Metre);
+			}
+		}
+		if (systemType == SystemType.movablePulley){
+			
+			//Movem la caixa i les politges mobils aplicant la outputForce que hem calculat
+			if (load.position.y <= maxY /*&& target.transform.position.y > 0*/ && Input.GetKey(KeyCode.W)){
+				target.transform.position += new Vector3(0, velocity * Time.deltaTime / 5, 0); 
+				load.position += new Vector3(0, velocity * Time.deltaTime / 5, 0)/MA;
+				velocity += (outputForce/boxMass)*Time.deltaTime/5;		
+
+				//Es va modificant una mica pq el pes de la corda t'ajuda
+				outputForce = tension [numTension - 1] + ( (load.position.y-target.transform.position.y) * P_Rope_Metre);
+			}
 		}
 
 	}
@@ -139,6 +165,7 @@ public class Manager : MonoBehaviour {
 
 		GUI.Label(new Rect(10, 10, 800, 20), "Força minima per aixecar la càrrega : " + outputForce);
 		GUI.Label(new Rect(10, 30, 800, 20), "LIMITS");
+		if(systemType == SystemType.fixedPulley)
 		GUI.Label(new Rect(10, 45, 800, 20), "Força que està suportant la politja : " + pulleyForce[0] + ", el limit d'aquest tipus de politja és " + pulleyLimit + "kN");
 		for (int i = 0; i < numTension; i++){
 			if (tension[i] > ropeLimit*1000)
@@ -149,6 +176,7 @@ public class Manager : MonoBehaviour {
 
 		//Distancia estirada
 		float pulledDist = Mathf.Round((2.17f - target.transform.position.y)*100f)/100f;
+		
 		GUI.Label(new Rect(10, 200, 300, 20), "Has estirat " + pulledDist + " de " + inputDistance + "m");
 
 		//INFORMACIO GENERAL
