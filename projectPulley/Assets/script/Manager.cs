@@ -43,7 +43,7 @@ public class Manager : MonoBehaviour {
 	private float velocity;
 	private float maxY;
 	public Transform load;
-	public GameObject target;
+	public Transform target;
 
 	// Use this for initialization
 	void Start () {
@@ -107,7 +107,7 @@ public class Manager : MonoBehaviour {
 			//longituds [1] += inputDistance;
 
 			//oF = T2 + (l1-l2)*P_rope/m
-			outputForce = tension [numTension - 1] + ( (load.position.y-target.transform.position.y) * P_Rope_Metre);
+			outputForce = tension [numTension - 1] + ( (load.position.y-target.position.y) * P_Rope_Metre);
 			pulleyForce[0] = ((( (ropeLength/2 * P_Rope_Metre) + drumFriction) * overHaulingFactor)+tension[0])*2; //2 pq alpha es 0 i per tant el factor es aixi
 		}
 
@@ -117,7 +117,7 @@ public class Manager : MonoBehaviour {
 			//longituds [1] += inputDistance;
 
 			//oF = T2 + (l1-l2)*P_rope/m
-			outputForce = tension [numTension-1] + ( (load.position.y-target.transform.position.y) * P_Rope_Metre);
+			outputForce = tension [numTension-1] + ( (load.position.y-target.position.y) * P_Rope_Metre);
 			//pulleyForce[0] = ((( (ropeLength/2 * P_Rope_Metre) + drumFriction) * overHaulingFactor)+tension[0])*2; //2 pq alpha es 0 i per tant el factor es aixi
 		}
 
@@ -133,25 +133,25 @@ public class Manager : MonoBehaviour {
 		
 		if (systemType == SystemType.fixedPulley){
 		//Movem la caixa i les politges mobils aplicant la outputForce que hem calculat
-			if (load.position.y <= maxY /*&& target.transform.position.y > 0*/ && Input.GetKey(KeyCode.S)){
-				target.transform.position -= new Vector3(0, velocity * Time.deltaTime / 5, 0); 
+			if (load.position.y <= maxY && Input.GetKey(KeyCode.S)){
+				target.position -= new Vector3(0, velocity * Time.deltaTime / 5, 0); 
 				load.position += new Vector3(0, velocity * Time.deltaTime / 5, 0)/MA;
 	            velocity += (outputForce/boxMass)*Time.deltaTime/5;		
 
 				//Es va modificant una mica pq el pes de la corda t'ajuda
-				outputForce = tension [numTension - 1] + ( (load.position.y-target.transform.position.y) * P_Rope_Metre);
+				outputForce = tension [numTension - 1] + ( (load.position.y-target.position.y) * P_Rope_Metre);
 			}
 		}
 		if (systemType == SystemType.movablePulley){
 			
 			//Movem la caixa i les politges mobils aplicant la outputForce que hem calculat
 			if (load.position.y <= maxY /*&& target.transform.position.y > 0*/ && Input.GetKey(KeyCode.W)){
-				target.transform.position += new Vector3(0, velocity * Time.deltaTime / 5, 0); 
+				target.position += new Vector3(0, velocity * Time.deltaTime / 5, 0); 
 				load.position += new Vector3(0, velocity * Time.deltaTime / 5, 0)/MA;
 				velocity += (outputForce/boxMass)*Time.deltaTime/5;		
 
 				//Es va modificant una mica pq el pes de la corda t'ajuda
-				outputForce = tension [numTension - 1] + ( (load.position.y-target.transform.position.y) * P_Rope_Metre);
+				outputForce = tension [numTension - 1] + ( (load.position.y-target.position.y) * P_Rope_Metre);
 			}
 		}
 
@@ -175,7 +175,7 @@ public class Manager : MonoBehaviour {
 		}
 
 		//Distancia estirada
-		float pulledDist = Mathf.Round((2.17f - target.transform.position.y)*100f)/100f;
+		float pulledDist = Mathf.Round((2.17f - target.position.y)*100f)/100f;
 		
 		GUI.Label(new Rect(10, 200, 300, 20), "Has estirat " + pulledDist + " de " + inputDistance + "m");
 

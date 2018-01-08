@@ -1,8 +1,4 @@
 sceneSetups:
-<<<<<<< HEAD
-- path: Assets/Scenes/finalScene.unity
-=======
 - path: Assets/Scenes/optionScene.unity
->>>>>>> f52091ddece7e1dda5d2b8daeccdd63fe9fad5ca
   isLoaded: 1
   isActive: 1

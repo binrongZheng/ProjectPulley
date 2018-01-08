@@ -95,7 +95,7 @@ public class ControlScene : MonoBehaviour {
 		if(alpha_Angle.text!=""){
 			Manager.alpha = float.Parse(alpha_Angle.text);
 		}
-		if(alpha_Angle.text!=""){
+		if(rope_Diametre.text!=""){
 			Manager.ropeDiametre = float.Parse( rope_Diametre.text);
 		}
 
