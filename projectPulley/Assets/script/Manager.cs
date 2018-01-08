@@ -117,7 +117,6 @@ public class Manager : MonoBehaviour {
 
 		//calculem la posicio final de la caixa
 		maxY = load.position.y + inputDistance;
-		print(alpha);
 	}
 	
 	// Update is called once per frame

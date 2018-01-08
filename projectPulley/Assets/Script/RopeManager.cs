@@ -95,7 +95,7 @@ public class RopeManager : MonoBehaviour {
 				float r = springVector.magnitude;
 				r = Mathf.Round (r *100f)/100f;
 
-                particles[i].rightForce = -1 * (ke * (r - segmentLongitude) + kd * ourVector3.Dot((particles[i].velocity - particles[i + 1].velocity), (springVector / r))) * springVector / r;
+                particles[i].rightForce = -1 * (ke * (r - segmentLongitude) + kd * Vector3.Dot((particles[i].velocity - particles[i + 1].velocity), (springVector / r))) * springVector / r;
 				//print(" num " + i + ": " + particles[i].rightForce.z);
 
 				//print(" num " + i + ": " + r);
@@ -104,11 +104,11 @@ public class RopeManager : MonoBehaviour {
 			//LA FORÇA PER L'ESQUERRA (a la primera no li setegem mai per tant es 0)
 			if (i > 0){
 				if (i == numParticles -1){ //a la ultima la tenim que calcular b pq no li hem calculat una right force a partir de la cual treure la left force
-					ourVector3 springVector = particles[i].position - particles[i-1].position;
-					float r = springVector.GetMagnitude();
+					Vector3 springVector = particles[i].position - particles[i-1].position;
+					float r = springVector.magnitude;
 					r = Mathf.Round (r *100f)/100f;
 
-					particles[i].leftForce = -1 * (ke * (r - segmentLongitude) + kd * ourVector3.Dot((particles[i].velocity - particles[i-1].velocity), (springVector / r))) * springVector / r;
+					particles[i].leftForce = -1 * (ke * (r - segmentLongitude) + kd * Vector3.Dot((particles[i].velocity - particles[i-1].velocity), (springVector / r))) * springVector / r;
 				}
 				else  particles[i].leftForce = -1 * particles[i - 1].rightForce;
 			}
