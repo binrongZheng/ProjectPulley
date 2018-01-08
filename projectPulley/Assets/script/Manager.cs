@@ -15,6 +15,7 @@ public class Manager : MonoBehaviour {
 	static public float staticCoef;
 	static public float alpha;
 	static public float ropeDiametre;
+	static public float angleFactor;
 
 	[Range (0.0f,1.5f)]
 	static public float inputDistance;
@@ -60,13 +61,13 @@ public class Manager : MonoBehaviour {
 			numPulley = 1;
 			numTension = 2;
 			//longituds = new float[]{ 2.5f, 2.5f };
+			pulleyForce = new float[1];
 			break;
 		case SystemType.twoPulleySystem:
 			MA = 2;
 			numPulley = 1;
 			numTension = 3;
 			//longituds = new float[]{ 2.5f, 1.25f,1.25f };
-
 			break;
 		default:
 			break;
@@ -97,22 +98,19 @@ public class Manager : MonoBehaviour {
 
 		//CALCULEM LONGITUDS
 		if (systemType == SystemType.fixedPulley){
-			//longituds [0] -= inputDistance;
-			//longituds [1] += inputDistance;
 
 			//oF = T2 + (l1-l2)*P_rope/m
 			outputForce = tension [numTension - 1] + ( (target.position.y-load.position.y) * P_Rope_Metre);
-			pulleyForce[0] = ((( (ropeLength/2 * P_Rope_Metre) + drumFriction) * overHaulingFactor)+tension[0])*2; //2 pq alpha es 0 i per tant el factor es aixi
+			pulleyForce[0] = ((( (ropeLength/2 * P_Rope_Metre) + drumFriction) * overHaulingFactor)+tension[0])*angleFactor; //2 pq alpha es 0 i per tant el factor es aixi
+
 		}
 
 		//CALCULEM LONGITUDS
 		if (systemType == SystemType.movablePulley){
-			//longituds [0] -= inputDistance;
-			//longituds [1] += inputDistance;
-
-			//oF = T2 + (l1-l2)*P_rope/m
-			outputForce = tension [numTension-1] + ( (target.position.y-load.position.y) * P_Rope_Metre);
-			//pulleyForce[0] = ((( (ropeLength/2 * P_Rope_Metre) + drumFriction) * overHaulingFactor)+tension[0])*2; //2 pq alpha es 0 i per tant el factor es aixi
+			
+			//oF = T2 + (l2)*P_rope/m
+			outputForce = tension [numTension-1] + ( (target.position.y-2) * P_Rope_Metre); //2 es l'alçada a la que esta la politja en un principi
+			pulleyForce[0] = ((( (ropeLength/2 * P_Rope_Metre) + drumFriction) * overHaulingFactor)+tension[0])*angleFactor; //2 pq alpha es 0 i per tant el factor es aixi
 		}
 
 		//calculem la posicio final de la caixa

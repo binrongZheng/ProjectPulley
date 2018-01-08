@@ -64,8 +64,7 @@ public class RopeManager : MonoBehaviour {
 		//int a = 8;
 		//int b = 11;
 		//print(particles[a].rightForce.x + "," + particles[a].rightForce.y + "," + particles[a].rightForce.z + " |||| " + particles[b].leftForce.x + "," + particles[b].leftForce.y + "," + particles[b].leftForce.z);
-		if (Input.GetKey(KeyCode.P))
-			UnityEditor.EditorApplication.isPaused = true;
+
     }
 
 	void OnPostRender() {
