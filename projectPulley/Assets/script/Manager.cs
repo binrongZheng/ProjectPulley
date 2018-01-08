@@ -9,15 +9,15 @@ public class Manager : MonoBehaviour {
 	public enum SheaveDiametre{eight=8,ten=10,twelve=12,fourteen=14,eighteen=18,twenty=20,twenty_four=24}; 
 
 	public SystemType systemType;
-	public PulleyType pulleyType;
-	public SheaveDiametre sheaveDiametre;
-	public float boxMass;
-	public float staticCoef;
-	public float alpha;
-	public float ropeDiametre;
+	static public PulleyType pulleyType;
+	static public SheaveDiametre sheaveDiametre;
+	static public float boxMass;
+	static public float staticCoef;
+	static public float alpha;
+	static public float ropeDiametre;
 
 	[Range (0.0f,1.5f)]
-	public float inputDistance;
+	static public float inputDistance;
 
 	//private
 	float pulleyMass;
@@ -128,6 +128,8 @@ public class Manager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		if(Input.GetKeyDown(KeyCode.Escape))
+			Application.LoadLevel("optionScene");
 		
 		if (systemType == SystemType.fixedPulley){
 		//Movem la caixa i les politges mobils aplicant la outputForce que hem calculat
