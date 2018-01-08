@@ -226,10 +226,10 @@ namespace ourEngine {
                 Vector3 intersectionPoint = vecPos + dir * distIntersec;
 
                 //comprovem si el punt d'interseccio que hem calculat esta entre pos i posCreuada
-				/*if ( (position - intersectionPoint).magnitude + (intersectionPoint - posCreuada).magnitude != (position - posCreuada).magnitude ){
+				if ( Mathf.Abs( (position - intersectionPoint).magnitude + (intersectionPoint - posCreuada).magnitude - (position - posCreuada).magnitude ) > 0.01f ){
 					distIntersec = -Vector3.Dot(dir, (position - pulleyPos)) + UnityEngine.Mathf.Sqrt((Vector3.Dot(dir, (position - pulleyPos))) * (Vector3.Dot(dir, (position - pulleyPos))) - ((position - pulleyPos).magnitude * (position - pulleyPos).magnitude) + (radius * radius));
 					intersectionPoint = position + dir * distIntersec;
-				}*/
+				}
                  //vector interseccio-centre sera la normal del pla
 				Vector3 n = (intersectionPoint - pulleyPos).normalized;
 
