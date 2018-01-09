@@ -225,8 +225,8 @@ namespace ourEngine {
 				float distIntersec = -1*Vector3.Dot(dir, (vecPos - pulleyPos)) - UnityEngine.Mathf.Sqrt((Vector3.Dot(dir, (vecPos - pulleyPos))) * (Vector3.Dot(dir, (vecPos - pulleyPos))) - ( (vecPos - pulleyPos).magnitude * (vecPos - pulleyPos).magnitude ) + (radius * radius));
                 Vector3 intersectionPoint = vecPos + dir * distIntersec;
 
-                //comprovem si el punt d'interseccio que hem calculat esta entre pos i posCreuada
-				if ( Mathf.Abs( (position - intersectionPoint).magnitude + (intersectionPoint - posCreuada).magnitude - (position - posCreuada).magnitude ) > 0.01f ){
+                //comprovem si el punt d'interseccio que hem calculat es el que tenim mes a prop o el de l'altre costat
+				if ( Mathf.Abs( (position - intersectionPoint).magnitude + (intersectionPoint - posCreuada).magnitude - (position - posCreuada).magnitude ) > radius ){
 					distIntersec = -Vector3.Dot(dir, (position - pulleyPos)) + UnityEngine.Mathf.Sqrt((Vector3.Dot(dir, (position - pulleyPos))) * (Vector3.Dot(dir, (position - pulleyPos))) - ((position - pulleyPos).magnitude * (position - pulleyPos).magnitude) + (radius * radius));
 					intersectionPoint = position + dir * distIntersec;
 				}

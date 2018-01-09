@@ -75,7 +75,7 @@ public class RopeManager : MonoBehaviour {
 			Vector3 nextPos = particles[i+1].position;
 
 			GL.Begin(GL.LINES);
-			GL.Color(new Color(0f, 0f, 0f, 1f));
+			GL.Color(new Color(1f, 0f, 0f, 1f));
 			GL.Vertex3(pos.x, pos.y, pos.z);
 			GL.Vertex3(nextPos.x, nextPos.y, nextPos.z);
 			GL.End();
