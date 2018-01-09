@@ -39,6 +39,7 @@ public class Manager : MonoBehaviour {
 	float gravity=9.81f;
 	float ropeLength = 10;
 	float ropeLimit;
+	float incialTargetPos;
 
 	//Per moure la caixa
 	private float velocity;
@@ -67,6 +68,7 @@ public class Manager : MonoBehaviour {
 			MA = 2;
 			numPulley = 1;
 			numTension = 3;
+			pulleyForce = new float[2];
 			//longituds = new float[]{ 2.5f, 1.25f,1.25f };
 			break;
 		default:
@@ -90,31 +92,40 @@ public class Manager : MonoBehaviour {
 		//CALCULEM TENSIONS
 		//en els nostres 3 casos la primera tensio és equivalent a aixo
 		tension[0]=p_load/MA;
+
 		//setegem la resta
 		for(int i=1;i<numTension;i++){
 			
 			tension [i] = tension [i - 1] * Mathf.Pow (eulerNum,staticCoef*beta*Mathf.Deg2Rad);
 		}
 
-		//CALCULEM LONGITUDS
+		incialTargetPos = target.position.y;
+		//CALCULEM FORCES FINALS I DE POLITJA
 		if (systemType == SystemType.fixedPulley){
 
 			//oF = T2 + (l1-l2)*P_rope/m
-			outputForce = tension [numTension - 1] + ( (target.position.y-load.position.y) * P_Rope_Metre);
+			outputForce = tension [numTension - 1] + ( (incialTargetPos - target.position.y)*2 * P_Rope_Metre);
 			pulleyForce[0] = ((( (ropeLength/2 * P_Rope_Metre) + drumFriction) * overHaulingFactor)+tension[0])*angleFactor; //2 pq alpha es 0 i per tant el factor es aixi
 
 		}
-
-		//CALCULEM LONGITUDS
 		if (systemType == SystemType.movablePulley){
 			
 			//oF = T2 + (l2)*P_rope/m
 			outputForce = tension [numTension-1] + ( (target.position.y-2) * P_Rope_Metre); //2 es l'alçada a la que esta la politja en un principi
 			pulleyForce[0] = ((( (ropeLength/2 * P_Rope_Metre) + drumFriction) * overHaulingFactor)+tension[0])*angleFactor; //2 pq alpha es 0 i per tant el factor es aixi
 		}
+		if (systemType == SystemType.twoPulleySystem){
+
+			//oF = T2 + (l2)*P_rope/m
+			outputForce = tension [numTension-1] + ( -((incialTargetPos - target.position.y) + (incialTargetPos - target.position.y)/2)  * P_Rope_Metre); //segon numero és l'alçada de la segona politja
+			pulleyForce[0] = tension[0]*angleFactor;
+			float ropeInPulley = (3.6f-(target.position.y-inputDistance)) + ((3.6f-load.position.y)+inputDistance/MA); //Tot el tros de corda que esta repenjat a aquesta politja
+			pulleyForce[1] = ((( (ropeInPulley/2 * P_Rope_Metre) + drumFriction) * overHaulingFactor)+tension[0])*angleFactor; //2 pq alpha es 0 i per tant el factor es aixi
+
+		}
 
 		//calculem la posicio final de la caixa
-		maxY = load.position.y + inputDistance;
+		maxY = load.position.y + inputDistance/MA;
 	}
 	
 	// Update is called once per frame
@@ -124,7 +135,7 @@ public class Manager : MonoBehaviour {
 		
 		if (systemType == SystemType.fixedPulley){
 		//Movem la caixa i les politges mobils aplicant la outputForce que hem calculat
-			if (load.position.y <= maxY && Input.GetKey(KeyCode.S)){
+			if (load.position.y < maxY && Input.GetKey(KeyCode.S)){
 				target.position -= new Vector3(0, velocity * Time.deltaTime / 5, 0); 
 				load.position += new Vector3(0, velocity * Time.deltaTime / 5, 0)/MA;
 	            velocity += (outputForce/boxMass)*Time.deltaTime/5;		
@@ -133,10 +144,10 @@ public class Manager : MonoBehaviour {
 				outputForce = tension [numTension - 1] + ( (target.position.y-load.position.y) * P_Rope_Metre);
 			}
 		}
-		if (systemType == SystemType.movablePulley){
+		else if (systemType == SystemType.movablePulley){
 			
 			//Movem la caixa i les politges mobils aplicant la outputForce que hem calculat
-			if (load.position.y <= maxY /*&& target.transform.position.y > 0*/ && Input.GetKey(KeyCode.W)){
+			if (load.position.y < maxY && Input.GetKey(KeyCode.W)){
 				target.position += new Vector3(0, velocity * Time.deltaTime / 5, 0); 
 				load.position += new Vector3(0, velocity * Time.deltaTime / 5, 0)/MA;
 				velocity += (outputForce/boxMass)*Time.deltaTime/5;		
@@ -145,6 +156,19 @@ public class Manager : MonoBehaviour {
 				outputForce = tension [numTension - 1] + ( (target.position.y-load.position.y) * P_Rope_Metre);
 			}
 		}
+		else if (systemType == SystemType.twoPulleySystem){
+
+			//Movem la caixa i les politges mobils aplicant la outputForce que hem calculat
+			if (load.position.y < maxY && Input.GetKey(KeyCode.S)){
+				target.position -= new Vector3(0, velocity * Time.deltaTime / 5, 0); 
+				load.position += new Vector3(0, velocity * Time.deltaTime / 5, 0)/MA;
+				velocity += (outputForce/boxMass)*Time.deltaTime/5;		
+
+				//Es va modificant una mica pq el pes de la corda t'ajuda
+				outputForce = tension [numTension - 1] + ( ((incialTargetPos - target.position.y) + (incialTargetPos - target.position.y)/2) * P_Rope_Metre);
+			}
+		}
+
 
 	}
 
@@ -152,21 +176,22 @@ public class Manager : MonoBehaviour {
 
 		//DADES DE RESULTATS
 		GUI.contentColor = Color.yellow;
-		GUI.Box(new Rect(5, 10, 550, 100), "");
+			GUI.Box(new Rect(5, 10, 550, 140), "");
 
 		GUI.Label(new Rect(10, 10, 800, 20), "Força minima per aixecar la càrrega : " + outputForce);
 		GUI.Label(new Rect(10, 30, 800, 20), "LIMITS");
-		if(systemType == SystemType.fixedPulley)
-		GUI.Label(new Rect(10, 45, 800, 20), "Força que està suportant la politja : " + pulleyForce[0] + ", el limit d'aquest tipus de politja és " + pulleyLimit + "kN");
 		for (int i = 0; i < numTension; i++){
 			if (tension[i] > ropeLimit*1000)
-				GUI.Label(new Rect(10, 60 + 15*i, 800, 20),"La tensio " + i + " es massa alta, la corda es trenca!!");
+				GUI.Label(new Rect(10, 45 + 15*i, 800, 20),"La tensio " + i + " es massa alta, la corda es trenca!!");
 			else
-				GUI.Label(new Rect(10, 60 + 15*i, 800, 20), "La tensio " + i + " es de " + tension[i] + ", el limit d'una corda d'aquestes característiques es de " + ropeLimit + "kN");			
+				GUI.Label(new Rect(10, 45 + 15*i, 800, 20), "La tensio " + i + " es de " + tension[i] + ", el limit d'una corda d'aquestes característiques es de " + ropeLimit + "kN");			
 		}
+		GUI.Label(new Rect(10, 90, 800, 100), "Força que està suportant la politja : " + pulleyForce[0] + ", el limit d'aquest tipus de politja és " + pulleyLimit + "kN");
+		if (systemType == SystemType.twoPulleySystem)
+			GUI.Label(new Rect(10, 120, 800, 100), "Força que està suportant la politja : " + pulleyForce[1] + ", el limit d'aquest tipus de politja és " + pulleyLimit + "kN");
 
 		//Distancia estirada
-		float pulledDist = Mathf.Round((2.17f - target.position.y)*100f)/100f;
+		float pulledDist = Mathf.Round(Mathf.Abs(incialTargetPos - target.position.y)*100f)/100f;
 		
 		GUI.Label(new Rect(10, 200, 300, 20), "Has estirat " + pulledDist + " de " + inputDistance + "m");
 

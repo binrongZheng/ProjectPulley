@@ -196,8 +196,7 @@ namespace ourEngine {
                 
                 position += velocity*delta;
 				velocity += delta* (force / mass);
-                //calculem les forces de la corda
-                //UnityEngine.Debug.Log(rightForce.x + "," + rightForce.y + "," + rightForce.z);
+                //calculem les forces de la corda                
                 force = rightForce + leftForce;
                 //apliquem la gravetat
 				force += new Vector3(0, -9.81f * mass*delta, 0);                      
@@ -226,7 +225,7 @@ namespace ourEngine {
 				float distIntersec;
 				distIntersec = -Vector3.Dot(dir, (position - pulleyPos)) - UnityEngine.Mathf.Sqrt((Vector3.Dot(dir, (position - pulleyPos))) * (Vector3.Dot(dir, (position - pulleyPos))) - ( (position - pulleyPos).magnitude * (position - pulleyPos).magnitude ) + (radius * radius));
 				Vector3 intersectionPoint = position + dir * distIntersec;
-				UnityEngine.Debug.Log((position - intersectionPoint).magnitude);
+
                 //comprovem si el punt d'interseccio que hem calculat es el que tenim mes a prop o el de l'altre costat
 				if ( Mathf.Abs( (position - intersectionPoint).magnitude /*+ (intersectionPoint - posCreuada).magnitude - (position - posCreuada).magnitude*/ ) > radius ){
 					distIntersec = -Vector3.Dot(dir, (position - pulleyPos)) + UnityEngine.Mathf.Sqrt((Vector3.Dot(dir, (position - pulleyPos))) * (Vector3.Dot(dir, (position - pulleyPos))) - ((position - pulleyPos).magnitude * (position - pulleyPos).magnitude) + (radius * radius));
@@ -254,37 +253,7 @@ namespace ourEngine {
 
             }
 			return false;
-        }
-
-       /* public void CalculateStringForces(ourParticle leftP, ourParticle rightP, float ke, float kd, float longitude) {
-            if (rightP != null)
-            {
-                
-                ourVector3 springVector = position - rightP.GetPos();
-                float r = springVector.GetMagnitude();
-                //UnityEngine.Debug.Log (springVector.x + "," + springVector.y + "," + springVector.z);
-
-                rightForce = -1 * (ke * (r - longitude) + kd * ourVector3.Dot((velocity - rightP.velocity), (springVector / r))) * springVector / r;
-            }
-            else
-            {
-                rightForce = new ourVector3(0, 0, 0);
-                
-            }               
-                
-            
-            if (leftP != null)
-            {
-                ourVector3 springVector = position - leftP.GetPos();
-                float r = springVector.GetMagnitude();
-
-                leftForce = -1 * (ke * (r - longitude) + kd * ourVector3.Dot((velocity - leftP.velocity), (springVector / r))) * springVector / r;
-            }
-            else
-                leftForce = new ourVector3(0,0,0);
-
-        }*/
-
+        }       
         
     }
 }

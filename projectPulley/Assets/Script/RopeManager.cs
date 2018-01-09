@@ -26,13 +26,6 @@ public class RopeManager : MonoBehaviour {
     void Start()
     {
         //Omplim l'array amb els joints de la corda per no haver-ho de fer manualment
-        /*realParticles = new Transform[rope.childCount];        
-        for (int i = 0; i < rope.childCount; i++)
-        {
-            realParticles[i] = rope.GetChild(i);            
-        }*/
-		
-		//numParticles = (int)(RopeLength/segmentLongitude);
 		numParticles = 20;
 		for (int i = 0; i < numParticles; i++){
 			GameObject newJoint = Instantiate(joint, new Vector3(rope.position.x+i*segmentLongitude, rope.position.y, rope.position.z), Quaternion.identity);
@@ -52,7 +45,7 @@ public class RopeManager : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
-		//print (particles[0].position + " vs " + ropeStart.position);
+		
 		particles[0].position = ropeStart.position;
 		particles[numParticles-1].position = ropeEnd.position;
 		
@@ -60,10 +53,6 @@ public class RopeManager : MonoBehaviour {
 		UpdateSimuation ();
 		DistanceCorrection();
 		SetRealPositions ();
-
-		//int a = 8;
-		//int b = 11;
-		//print(particles[a].rightForce.x + "," + particles[a].rightForce.y + "," + particles[a].rightForce.z + " |||| " + particles[b].leftForce.x + "," + particles[b].leftForce.y + "," + particles[b].leftForce.z);
 
     }
 
@@ -121,18 +110,7 @@ public class RopeManager : MonoBehaviour {
         //Simular posicions
 		for (int i = 0; i < numParticles; i++)
         {
-            /*
-            //actualitzem la simulacio
-            if (i > 0 && i < realParticles.Length-1)
-            {
-                particles[i].CalculateStringForces(particles[i - 1], particles[i + 1], ke, kd, segmentLongitude);                
-            }
-            else if (i == 0)
-                particles[i].CalculateStringForces(null, particles[i + 1], ke, kd, segmentLongitude);
-            else if (i == realParticles.Length-1)
-                particles[i].CalculateStringForces(particles[i - 1], null, ke, kd, segmentLongitude);
-            */
-
+            
             //Detectar colisions
 			particles[i].PulleyCollision(pulley.position, 0.55f, Time.deltaTime);
 		
