@@ -7,6 +7,9 @@ public class ArrowsManager : MonoBehaviour {
 	public GameObject arrowForces;
 	public GameObject velocityForces;
 
+	public GameObject trailLoad,trailTarget;
+
+
 	// Use this for initialization
 	void Start () {
 		
@@ -20,5 +23,11 @@ public class ArrowsManager : MonoBehaviour {
 		if (Input.GetKeyDown(KeyCode.G)) {
 			velocityForces.SetActive(!velocityForces.activeSelf);
 		}
+		if (Input.GetKeyDown(KeyCode.B)) {
+			trailLoad.SetActive(!trailLoad.activeSelf);
+			trailTarget.SetActive(!trailTarget.activeSelf);
+		}
 	}
+
+
 }
