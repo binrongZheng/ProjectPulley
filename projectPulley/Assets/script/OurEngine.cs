@@ -214,19 +214,21 @@ namespace ourEngine {
 			Vector3 distVector = posCreuada - pulleyPos;
 			float dist = distVector.magnitude;
             
-			Vector3 vecPos = position;
+
 
             if (dist < radius)
-            {
+			{
 				
 				//UnityEngine.Debug.DrawLine(position, position + velocity * 5, UnityEngine.Color.blue);
                 //trobem el punt d'interseccio
 				Vector3 dir = velocity.normalized; //normalitzem velocitat per fer la recta que surt de PosActual i va en dir de la velocitat
-				float distIntersec = -1*Vector3.Dot(dir, (vecPos - pulleyPos)) - UnityEngine.Mathf.Sqrt((Vector3.Dot(dir, (vecPos - pulleyPos))) * (Vector3.Dot(dir, (vecPos - pulleyPos))) - ( (vecPos - pulleyPos).magnitude * (vecPos - pulleyPos).magnitude ) + (radius * radius));
-                Vector3 intersectionPoint = vecPos + dir * distIntersec;
 
+				float distIntersec;
+				distIntersec = -Vector3.Dot(dir, (position - pulleyPos)) - UnityEngine.Mathf.Sqrt((Vector3.Dot(dir, (position - pulleyPos))) * (Vector3.Dot(dir, (position - pulleyPos))) - ( (position - pulleyPos).magnitude * (position - pulleyPos).magnitude ) + (radius * radius));
+				Vector3 intersectionPoint = position + dir * distIntersec;
+				UnityEngine.Debug.Log((position - intersectionPoint).magnitude);
                 //comprovem si el punt d'interseccio que hem calculat es el que tenim mes a prop o el de l'altre costat
-				if ( Mathf.Abs( (position - intersectionPoint).magnitude + (intersectionPoint - posCreuada).magnitude - (position - posCreuada).magnitude ) > radius ){
+				if ( Mathf.Abs( (position - intersectionPoint).magnitude /*+ (intersectionPoint - posCreuada).magnitude - (position - posCreuada).magnitude*/ ) > radius ){
 					distIntersec = -Vector3.Dot(dir, (position - pulleyPos)) + UnityEngine.Mathf.Sqrt((Vector3.Dot(dir, (position - pulleyPos))) * (Vector3.Dot(dir, (position - pulleyPos))) - ((position - pulleyPos).magnitude * (position - pulleyPos).magnitude) + (radius * radius));
 					intersectionPoint = position + dir * distIntersec;
 				}
