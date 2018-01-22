@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Manager : MonoBehaviour {
 	//public
@@ -46,6 +47,8 @@ public class Manager : MonoBehaviour {
 	private float maxY;
 	public Transform load;
 	public Transform target;
+
+	private GUIStyle guiStyle = new GUIStyle();
 
 	// Use this for initialization
 	void Start () {
@@ -130,8 +133,6 @@ public class Manager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if(Input.GetKeyDown(KeyCode.Escape))
-			Application.LoadLevel("optionScene");
 		
 		if (systemType == SystemType.fixedPulley){
 		//Movem la caixa i les politges mobils aplicant la outputForce que hem calculat
@@ -169,6 +170,13 @@ public class Manager : MonoBehaviour {
 			}
 		}
 
+		//Restart i go to menu
+		if (Input.GetKeyDown (KeyCode.Escape))
+			SceneManager.LoadScene("optionScene");
+		if(Input.GetKeyDown(KeyCode.Space))
+			Application.LoadLevel(SceneManager.GetActiveScene().buildIndex);
+		
+
 
 	}
 
@@ -178,32 +186,43 @@ public class Manager : MonoBehaviour {
 		GUI.contentColor = Color.yellow;
 			GUI.Box(new Rect(5, 10, 550, 140), "");
 
-		GUI.Label(new Rect(10, 10, 800, 20), "Força minima per aixecar la càrrega : " + outputForce);
+		GUI.Label(new Rect(10, 10, 800, 20), "Minimum force to lift the rope : " + outputForce);
 		GUI.Label(new Rect(10, 30, 800, 20), "LIMITS");
 		for (int i = 0; i < numTension; i++){
 			if (tension[i] > ropeLimit*1000)
-				GUI.Label(new Rect(10, 45 + 15*i, 800, 20),"La tensio " + i + " es massa alta, la corda es trenca!!");
+				GUI.Label(new Rect(10, 45 + 15*i, 800, 20),"Tension " + i + " is too high, the rope breaks!!");
 			else
-				GUI.Label(new Rect(10, 45 + 15*i, 800, 20), "La tensio " + i + " es de " + tension[i] + ", el limit d'una corda d'aquestes característiques es de " + ropeLimit + "kN");			
+				GUI.Label(new Rect(10, 45 + 15*i, 800, 20), "The tension " + i + " is " + tension[i] + ", the rope limit is " + ropeLimit + "kN");			
 		}
-		GUI.Label(new Rect(10, 90, 800, 100), "Força que està suportant la politja : " + pulleyForce[0] + ", el limit d'aquest tipus de politja és " + pulleyLimit + "kN");
-		if (systemType == SystemType.twoPulleySystem)
-			GUI.Label(new Rect(10, 120, 800, 100), "Força que està suportant la politja : " + pulleyForce[1] + ", el limit d'aquest tipus de politja és " + pulleyLimit + "kN");
+
+		if (systemType == SystemType.twoPulleySystem) {
+			GUI.Label (new Rect (10, 100, 800, 100), "Force that the first pulley is holding : " + pulleyForce [0] + ", the limit of this type of pulley is " + pulleyLimit + "kN");
+			GUI.Label (new Rect (10, 120, 800, 100), "Force that the second pulley is holding : " + pulleyForce [1] + ", the limit of this type of pulley is " + pulleyLimit + "kN");
+		}
+		else
+			GUI.Label(new Rect(10, 90, 800, 100), "Force that the pulley is holding : " + pulleyForce[0] + ", the limit of this type of pulley is " + pulleyLimit + "kN");
 
 		//Distancia estirada
 		float pulledDist = Mathf.Round(Mathf.Abs(incialTargetPos - target.position.y)*100f)/100f;
-		
-		GUI.Label(new Rect(10, 200, 300, 20), "Has estirat " + pulledDist + " de " + inputDistance + "m");
+
+		GUI.contentColor = Color.black;
+
+		guiStyle.fontSize = 20;
+		GUI.Label(new Rect(10, Screen.height/2, 300, 20), "You pulled " + pulledDist + " of " + inputDistance + "m", guiStyle);
+		guiStyle.fontSize = 18;
+		GUI.Label(new Rect(Screen.width - 250, Screen.height-20, 300, 20), "Press 'esc' to go to menu", guiStyle);
+		GUI.Label(new Rect(Screen.width - 250, Screen.height-40, 300, 20), "Press 'space' to restart scene", guiStyle);
+		GUI.contentColor = Color.yellow;
 
 		//INFORMACIO GENERAL
 		GUI.Box(new Rect(5, Screen.height-10, 300, -170), "");
-		GUI.Label(new Rect(10, Screen.height-160, 300, 20), "DADES GENERALS");
-		GUI.Label(new Rect(10, Screen.height-140, 300, 20), "Aquest sistema es : " + systemType);
-		GUI.Label(new Rect(10, Screen.height-120, 300, 20), "- La massa que volem aixecar es de " + boxMass + "kg");
-		GUI.Label(new Rect(10, Screen.height-100, 300, 20), "- El diametre de la corda es de " + ropeDiametre + " polzades");
-		GUI.Label(new Rect(10, Screen.height-80, 300, 20), "- La corda pesa " + P_Rope_Metre + "N/m");					
-		GUI.Label(new Rect(10, Screen.height-60, 300, 20), "- La politja es de tipus " + pulleyType + " i pesa " + pulleyMass +"kg");
-		GUI.Label(new Rect(10, Screen.height-40, 300, 20), "- El diametre de la politja es de '" + sheaveDiametre + "' polzades");
+		GUI.Label(new Rect(10, Screen.height-160, 300, 20), "GENERAL DATA");
+		GUI.Label(new Rect(10, Screen.height-140, 300, 20), "This system is : " + systemType);
+		GUI.Label(new Rect(10, Screen.height-120, 300, 20), "- We are lifting a mass of " + boxMass + "kg");
+		GUI.Label(new Rect(10, Screen.height-100, 300, 20), "- The rope diametre is " + ropeDiametre + " inches");
+		GUI.Label(new Rect(10, Screen.height-80, 300, 20), "- The rope weights " + P_Rope_Metre + "N/m");					
+		GUI.Label(new Rect(10, Screen.height-60, 300, 20), "- This pulley is '" + pulleyType + "' and weights " + pulleyMass +"kg");
+		GUI.Label(new Rect(10, Screen.height-40, 300, 20), "- The pulley has a diametre of '" + sheaveDiametre + "' inches");
 
 	}
 

@@ -22,6 +22,8 @@ public class RopeManager : MonoBehaviour {
 	public Transform ropeStart;
 	public Transform ropeEnd;
 
+	LineRenderer lineRenderer;
+
     // Use this for initialization
     void Start()
     {
@@ -30,6 +32,8 @@ public class RopeManager : MonoBehaviour {
 		for (int i = 0; i < numParticles; i++){
 			GameObject newJoint = Instantiate(joint, new Vector3(rope.position.x+i*segmentLongitude, rope.position.y, rope.position.z), Quaternion.identity);
 			newJoint.transform.parent = rope;
+			//LineRenderer lineRenderer = newJoint.AddComponent<LineRenderer>();
+			//lineRenderer.SetWidth(0, 3);
 		}
 
         //iniciem les nostra simulacio a la posicio de la corda real
@@ -39,6 +43,10 @@ public class RopeManager : MonoBehaviour {
         }
 		particles[0] = new ourParticle(ropeStart.position, 1, true);
 		particles[numParticles-1] = new ourParticle(ropeEnd.position, 1, true);
+
+		//Agafem el component per pintar linies
+		lineRenderer = GetComponent<LineRenderer> ();
+		lineRenderer.positionCount = numParticles;
 
     }
 
@@ -54,21 +62,23 @@ public class RopeManager : MonoBehaviour {
 		DistanceCorrection();
 		SetRealPositions ();
 
+
     }
 
 	void OnPostRender() {
-		for (int i = 0; i < numParticles-1; i++)
+		for (int i = 0; i < numParticles; i++)
 		{
-
-			Vector3 pos = particles[i].position;
+			lineRenderer.SetPosition (i, particles [i].position);
+			/*Vector3 pos = particles[i].position;
 			Vector3 nextPos = particles[i+1].position;
 
 			GL.Begin(GL.LINES);
 			GL.Color(new Color(1f, 1f, 1f, 1f));
 			GL.Vertex3(pos.x, pos.y, pos.z);
 			GL.Vertex3(nextPos.x, nextPos.y, nextPos.z);
-			GL.End();
+			GL.End();*/
 		}
+
 	}
 
     void CalculateSpringForces()
