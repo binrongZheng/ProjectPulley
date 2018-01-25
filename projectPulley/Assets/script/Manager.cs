@@ -25,17 +25,17 @@ public class Manager : MonoBehaviour {
 	float pulleyMass;
 	float pulleyLimit;
 	float eulerNum = 2.71828182f;
-	float p_load;
+	static public float p_load;
 	float drumFriction=222.4f;
 	float beta;
 	float P_Rope_Metre;	
 	float overHaulingFactor;
 	//float[] longituds;
-	float[] tension=new float[3];
+	static public float[] tension=new float[3];
 	int numTension;
-	float outputForce;
+	static public float outputForce;
 	float MA;
-	float[] pulleyForce; 
+	static public float[] pulleyForce; 
 	int numPulley; //Aquestes nomes son les mobils
 	float gravity=9.81f;
 	float ropeLength = 10;
