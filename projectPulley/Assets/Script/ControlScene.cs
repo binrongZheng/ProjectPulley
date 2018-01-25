@@ -38,12 +38,18 @@ public class ControlScene : MonoBehaviour {
 	{
 		if(box_Mass.text!=""/*&&static_Coef.text!=""&&alpha_Angle.text!=""*/){
 			if(Manager.inputDistance!=0){
-				if(system_Type.value==0)
-					Application.LoadLevel("fixedPulley");
-				if(system_Type.value==1)
-					Application.LoadLevel("movablePulley");
-				if(system_Type.value==2)
-					Application.LoadLevel("twoPulley");
+				if (system_Type.value == 0) {
+					Manager.systemType = Manager.SystemType.fixedPulley;
+					Application.LoadLevel ("fixedPulley");
+				}
+				if (system_Type.value == 1) {
+					Manager.systemType = Manager.SystemType.movablePulley;
+					Application.LoadLevel ("movablePulley");
+				}
+				if (system_Type.value == 2) {
+					Manager.systemType = Manager.SystemType.twoPulleySystem;
+					Application.LoadLevel ("twoPulley");
+				}
 			}
 		}
 	}

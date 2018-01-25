@@ -9,7 +9,7 @@ public class Manager : MonoBehaviour {
 	public enum PulleyType{withHook,withShackle,tailBoard}; 
 	public enum SheaveDiametre{eight=8,ten=10,twelve=12,fourteen=14,eighteen=18}; 
 
-	public SystemType systemType;
+	static public SystemType systemType;
 	static public PulleyType pulleyType;
 	static public SheaveDiametre sheaveDiametre;
 	static public float boxMass;
