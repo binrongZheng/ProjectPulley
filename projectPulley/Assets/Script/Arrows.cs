@@ -89,7 +89,7 @@ public class Arrows : MonoBehaviour {
 			//print (pL);
 			pL = Mathf.Clamp (pL,0f,0.2f);
 			//print (pL);
-			arrowForces[1].transform.position = initPos[1].position-new Vector3(0,initPos[1].localScale.y/2,0);
+			arrowForces[1].transform.position = initPos[1].position+new Vector3(0,0,initPos[1].localScale.z/2);
 			arrowForces[1].transform.localScale=new Vector3(pL,arrowForces[1].transform.localScale.y,arrowForces[1].transform.localScale.z);
 			/*
 
