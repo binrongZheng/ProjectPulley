@@ -1,4 +1,4 @@
 sceneSetups:
-- path: Assets/Scenes/fixedPulley.unity
+- path: Assets/Scenes/movablePulley.unity
   isLoaded: 1
   isActive: 1
