@@ -136,7 +136,7 @@ public class Manager : MonoBehaviour {
 		
 		if (systemType == SystemType.fixedPulley){
 		//Movem la caixa i les politges mobils aplicant la outputForce que hem calculat
-			if (load.position.y < maxY && Input.GetKey(KeyCode.S)){
+			if (load.position.y < maxY && Input.GetKey(KeyCode.S) && IK_Fabrik.angulo < 0.1f){
 				target.position -= new Vector3(0, velocity * Time.deltaTime / 5, 0); 
 				load.position += new Vector3(0, velocity * Time.deltaTime / 5, 0)/MA;
 	            velocity += (outputForce/boxMass)*Time.deltaTime/5;		
@@ -148,7 +148,7 @@ public class Manager : MonoBehaviour {
 		else if (systemType == SystemType.movablePulley){
 			
 			//Movem la caixa i les politges mobils aplicant la outputForce que hem calculat
-			if (load.position.y < maxY && Input.GetKey(KeyCode.W)){
+			if (load.position.y < maxY && Input.GetKey(KeyCode.W) && IK_Fabrik.angulo < 0.1f){
 				target.position += new Vector3(0, velocity * Time.deltaTime / 5, 0); 
 				load.position += new Vector3(0, velocity * Time.deltaTime / 5, 0)/MA;
 				velocity += (outputForce/boxMass)*Time.deltaTime/5;		
@@ -160,7 +160,7 @@ public class Manager : MonoBehaviour {
 		else if (systemType == SystemType.twoPulleySystem){
 
 			//Movem la caixa i les politges mobils aplicant la outputForce que hem calculat
-			if (load.position.y < maxY && Input.GetKey(KeyCode.S)){
+			if (load.position.y < maxY && Input.GetKey(KeyCode.S) && IK_Fabrik.angulo < 0.1f){
 				target.position -= new Vector3(0, velocity * Time.deltaTime / 5, 0); 
 				load.position += new Vector3(0, velocity * Time.deltaTime / 5, 0)/MA;
 				velocity += (outputForce/boxMass)*Time.deltaTime/5;		

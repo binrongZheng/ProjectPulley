@@ -11,23 +11,25 @@ public class IK_Fabrik : MonoBehaviour {
 
 	private ourVector3[] copy;		
 	private float[] distances;		
-	private bool done;
+	public static bool done;
 
 	private float threshold_distance = 0.1f;
+	public static float distToTarget;
 	private float maxIterations = 50;
 
-	private float angulo;
+	public static float angulo;
 	public Transform pivot;
 	private ourVector3 pivotCopy;
 
 	void Start () {
+		done = false;
 		pivotCopy = pivot.position;
 		distances = new float[joints.Length - 1];
 		copy = new ourVector3[joints.Length];
 	}
 
 	void Update () {
-
+		
 		//copiar els joints a copy i calcular distancies
 		for (int i = 0; i < joints.Length;i++){
 			copy [i] = joints[i].position;
@@ -35,6 +37,7 @@ public class IK_Fabrik : MonoBehaviour {
 				distances [i] = (joints [i + 1].position - joints [i].position).magnitude;
 			}
 		}
+
 		//Comporvar si estem en linia
 		CalculateAlignment ();
 		if (angulo > 0.1f) {
@@ -62,7 +65,7 @@ public class IK_Fabrik : MonoBehaviour {
 					}
 				}
 				else {
-
+					
 					int counter = 0;
 					//El target esta a l'alcanç
 					while (!done && counter < maxIterations){
@@ -114,7 +117,6 @@ public class IK_Fabrik : MonoBehaviour {
 				}
 
 			}
-
 		}
 	}
 
