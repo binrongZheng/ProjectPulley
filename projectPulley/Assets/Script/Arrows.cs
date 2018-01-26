@@ -91,25 +91,25 @@ public class Arrows : MonoBehaviour {
 			//print (pL);
 			arrowForces[1].transform.position = initPos[1].position+new Vector3(0,0,initPos[1].localScale.z/2);
 			arrowForces[1].transform.localScale=new Vector3(pL,arrowForces[1].transform.localScale.y,arrowForces[1].transform.localScale.z);
-			/*
+
 
 			for (int i = 0; i < arrowTensioForces.Length; i++) {
 				pulleyT [i] = Manager.tension [i] / 10000;
-				pulleyT [i] = Mathf.Clamp (pulleyT[i],0,0.16f);
+				pulleyT [i] = Mathf.Clamp (pulleyT[i],0,0.3f);
 
 				arrowTensioForces[i].transform.localScale=new Vector3(pulleyT[i],arrowTensioForces[i].transform.localScale.y,arrowTensioForces[i].transform.localScale.z);
 
 			}
 
-			arrowTensioForces [0].transform.position = initPos [0].position;
-			vectorDir [0] = FinTensioForces[0].transform.position+new Vector3(FinTensioForces[0].transform.localScale.x/2,0,0) - initPos [0].position;
+			arrowTensioForces [0].transform.position = initTensioForces [0].transform.position-new Vector3(initTensioForces[0].transform.localScale.x/2,0,0);
+			vectorDir [0] = FinTensioForces[0].transform.position+new Vector3(FinTensioForces[0].transform.localScale.x/2,0,0) - initTensioForces [0].transform.position;
 			TensionAngle [0]=Mathf.Atan2(vectorDir[0].y,-vectorDir[0].x)*Mathf.Rad2Deg;
 			arrowTensioForces [0].transform.rotation = Quaternion.AngleAxis (TensionAngle[0],new Vector3(0,0,-1));
 
-			arrowTensioForces [1].transform.position = initPos [1].position+new Vector3(0, initPos[0].localScale.y/2,0);
-			vectorDir [1] = FinTensioForces[1].transform.position-new Vector3(FinTensioForces[1].transform.localScale.x/2,0,0)  - initPos [1].position;
+			arrowTensioForces [1].transform.position = initTensioForces [1].transform.position+new Vector3(initTensioForces[0].transform.localScale.x/2,0,0);
+			vectorDir [1] = FinTensioForces[1].transform.position-new Vector3(FinTensioForces[1].transform.localScale.x/2,0,0)  - initTensioForces [1].transform.position;
 			TensionAngle[1]=Mathf.Atan2(vectorDir[1].y,-vectorDir[1].x)*Mathf.Rad2Deg;
-			arrowTensioForces[1].transform.rotation= Quaternion.AngleAxis (TensionAngle[1],new Vector3(0,0,-1));*/
+			arrowTensioForces[1].transform.rotation= Quaternion.AngleAxis (TensionAngle[1],new Vector3(0,0,-1));
 
 		}
 		else if(Manager.systemType == Manager.SystemType.twoPulleySystem){
