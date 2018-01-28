@@ -74,7 +74,7 @@ public class Arrows : MonoBehaviour {
 			}
 
 			arrowTensioForces [0].transform.position = initPos [0].position;
-			vectorDir [0] = FinTensioForces[0].transform.position+new Vector3(FinTensioForces[0].transform.localScale.x/2,0,0) - initPos [0].position;
+			vectorDir [0] = FinTensioForces[0].transform.position+new Vector3(FinTensioForces[0].transform.localScale.x/2,0,0) - initPos [0].position+new Vector3(0,initPos[1].localScale.y/2,0);;
 			TensionAngle [0]=Mathf.Atan2(vectorDir[0].y,-vectorDir[0].x)*Mathf.Rad2Deg;
 			arrowTensioForces [0].transform.rotation = Quaternion.AngleAxis (TensionAngle[0],new Vector3(0,0,-1));
 
@@ -114,7 +114,7 @@ public class Arrows : MonoBehaviour {
 			arrowTensioForces [0].transform.rotation = Quaternion.AngleAxis (TensionAngle[0],new Vector3(0,0,-1));
 
 			arrowTensioForces [1].transform.position = initTensioForces [1].transform.position+new Vector3(initTensioForces[0].transform.localScale.x/2,0,0);
-			vectorDir [1] = FinTensioForces[1].transform.position-new Vector3(FinTensioForces[1].transform.localScale.x/2,0,0)  - initTensioForces [1].transform.position;
+			vectorDir [1] = FinTensioForces[1].transform.position-new Vector3(FinTensioForces[1].transform.localScale.x/2,0,0)  - initTensioForces [1].transform.position+new Vector3(initTensioForces[0].transform.localScale.x/2,0,0);
 			TensionAngle[1]=Mathf.Atan2(vectorDir[1].y,-vectorDir[1].x)*Mathf.Rad2Deg;
 			arrowTensioForces[1].transform.rotation= Quaternion.AngleAxis (TensionAngle[1],new Vector3(0,0,-1));
 
